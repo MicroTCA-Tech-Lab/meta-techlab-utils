@@ -1,0 +1,57 @@
+From 788c19e9730ae242761ab5757171e44d6a5f8f9e Mon Sep 17 00:00:00 2001
+From: Jan Marjanovic <jan.marjanovic@desy.de>
+Date: Wed, 5 Aug 2020 16:11:42 +0200
+Subject: [PATCH] Update Makefile for Yocto (env variables)
+
+---
+ Makefile | 33 +++++++--------------------------
+ 1 file changed, 7 insertions(+), 26 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 62d8e64..be63af6 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,33 +1,14 @@
+-HOST_ARCH       ?= $(shell uname -m | sed -e s/arm.*/arm/ -e s/aarch64.*/arm64/)
+-ARCH            ?= $(shell uname -m | sed -e s/arm.*/arm/ -e s/aarch64.*/arm64/)
+-KERNEL_SRC_DIR  ?= /lib/modules/$(shell uname -r)/build
+ 
+-ifeq ($(ARCH), arm)
+- ifneq ($(HOST_ARCH), arm)
+-   CROSS_COMPILE  ?= arm-linux-gnueabihf-
+- endif
+-endif
+-ifeq ($(ARCH), arm64)
+- ifneq ($(HOST_ARCH), arm64)
+-   CROSS_COMPILE  ?= aarch64-linux-gnu-
+- endif
+-endif
++obj-m := u-dma-buf.o
+ 
+-u-dma-buf-obj           := u-dma-buf.o
+-obj-$(CONFIG_U_DMA_BUF) += $(u-dma-buf-obj)
++SRC := $(shell pwd)
+ 
+-ifndef UDMABUF_MAKE_TARGET
+-  KERNEL_VERSION_LT_5 ?= $(shell awk '/^VERSION/{print int($$3) < 5}' $(KERNEL_SRC_DIR)/Makefile)
+-  ifeq ($(KERNEL_VERSION_LT_5), 1)
+-    UDMABUF_MAKE_TARGET ?= modules
+-  else
+-    UDMABUF_MAKE_TARGET ?= u-dma-buf.ko
+-  endif
+-endif
+ 
+ all:
+-	make -C $(KERNEL_SRC_DIR) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) M=$(PWD) obj-m=$(u-dma-buf-obj) $(UDMABUF_MAKE_TARGET)
++	$(MAKE) -C $(KERNEL_SRC) M=$(SRC) modules
+ 
+-clean:
+-	make -C $(KERNEL_SRC_DIR) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) M=$(PWD) clean
++modules_install:
++	$(MAKE) -C $(KERNEL_SRC) M=$(SRC) modules_install
+ 
++clean:
++	$(MAKE) -C $(KERNEL_SRC) M=$(SRC) clean
+-- 
+2.17.1
+
