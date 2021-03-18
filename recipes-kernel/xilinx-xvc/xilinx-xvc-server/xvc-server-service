@@ -1,0 +1,57 @@
+#!/bin/bash
+#
+# chkconfig: 35 90 12
+# description: XVC server
+#
+
+# Get function from functions library
+. /etc/init.d/functions
+
+LOG_FILE=/var/log/xvc-server.log
+LOCK_FILE=/var/lock/subsys/xvc-server-service
+
+# Start the service FOO
+start() {
+    if [ -f $LOCK_FILE ]; then
+        echo "XVC server already running"
+        exit 1
+    fi
+
+    echo "Starting XVC server" >> $LOG_FILE
+    unbuffer /opt/xilinx/xvcServer_ioctl >> $LOG_FILE &
+
+    ### Create the lock file ###
+    touch $LOCK_FILE
+    success $"XVC server startup"
+}
+
+# Restart the service FOO
+stop() {
+    echo "Stopping XVC server" >> $LOG_FILE
+    killproc xvcServer_ioctl
+    ### Now, delete the lock file ###
+    rm -f $LOCK_FILE
+}
+
+### main logic ###
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        status xvcServer_ioctl
+        ;;
+    restart|reload|condrestart)
+        stop
+        start
+        ;;
+    *)
+        echo $"Usage: $0 {start|stop|restart|reload|status}"
+        exit 1
+esac
+
+exit 0
+
