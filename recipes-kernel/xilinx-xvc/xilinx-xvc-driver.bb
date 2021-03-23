@@ -3,7 +3,7 @@ DESCRIPTION = "Linux kernel driver for Xilinx Virtual Cable"
 inherit module
 
 PV = "1.1"
-PR = "r0"
+PR = "r1"
 SRCREV="067232f9fb78972b76cd3c70c7a4c7c46b841221"
 
 LICENSE = "GPLv2"
@@ -16,4 +16,5 @@ SRC_URI = "\
 
 S = "${WORKDIR}/git/zynqMP/src/driver"
 
-KERNEL_MODULE_AUTOLOAD += "xilinx-xvc-driver"
+RPROVIDES_${PN} += "kernel-module-xilinx-xvc-driver"
+KERNEL_MODULE_AUTOLOAD += "xilinx_xvc_driver"
