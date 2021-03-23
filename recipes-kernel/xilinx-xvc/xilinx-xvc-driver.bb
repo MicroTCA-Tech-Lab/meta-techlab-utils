@@ -15,3 +15,5 @@ SRC_URI = "\
 "
 
 S = "${WORKDIR}/git/zynqMP/src/driver"
+
+KERNEL_MODULE_AUTOLOAD += "xilinx-xvc-driver"
