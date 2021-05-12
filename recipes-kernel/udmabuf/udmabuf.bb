@@ -23,14 +23,14 @@ SRC_URI_append = " file://0001-Update-Makefile-for-Yocto-env-variables.patch \
 FILES_${PN} = " \
     /lib \
     /lib/modules \
-    /lib/modules/5.4.0-xilinx-v2020.1 \
-    /lib/modules/5.4.0-xilinx-v2020.1/extra \
-    /lib/modules/5.4.0-xilinx-v2020.1/extra/u-dma-buf.ko \
+    /lib/modules/5.4.0-xilinx-v2020.2 \
+    /lib/modules/5.4.0-xilinx-v2020.2/extra \
+    /lib/modules/5.4.0-xilinx-v2020.2/extra/u-dma-buf.ko \
     ${sysconfdir}/rcS.d/S80udmabuf \
     ${sysconfdir}/init.d/udmabuf.sh \
 "
 
-RPROVIDES_${PN} += "kernel-module-u-dma-buf-5.4.0-xilinx-v2020.1"
+RPROVIDES_${PN} += "kernel-module-u-dma-buf-5.4.0-xilinx-v2020.2"
 
 do_install_append() {
     install -d ${D}${sysconfdir}/init.d
