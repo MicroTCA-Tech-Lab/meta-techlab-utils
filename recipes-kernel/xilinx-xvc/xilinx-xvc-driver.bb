@@ -16,5 +16,9 @@ SRC_URI = "\
 
 S = "${WORKDIR}/git/zynqMP/src/driver"
 
+SRC_URI_append_damc-fmc1z7io = "\
+  file://0001-Modifiy-Makefile-for-Zynq7000.patch \
+"
+
 RPROVIDES_${PN} += "kernel-module-xilinx-xvc-driver"
 KERNEL_MODULE_AUTOLOAD += "xilinx_xvc_driver"
