@@ -1,4 +1,4 @@
-CRIPTION = "udmabuf(User space mappable DMA Buffer)"
+DESCRIPTION = "udmabuf(User space mappable DMA Buffer)"
 LICENSE = "BSD"
 PV = "3.2.2"
 PR = "r0"
@@ -17,26 +17,9 @@ DEPENDS += "xz-native bc-native bison-native"
 # patches
 FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 SRC_URI_append = " file://0001-Update-Makefile-for-Yocto-env-variables.patch \
-    file://udmabuf.sh \
-"
-
-FILES_${PN} = " \
-    /lib \
-    /lib/modules \
-    /lib/modules/5.4.0-xilinx-v2020.2 \
-    /lib/modules/5.4.0-xilinx-v2020.2/extra \
-    /lib/modules/5.4.0-xilinx-v2020.2/extra/u-dma-buf.ko \
-    ${sysconfdir}/rcS.d/S80udmabuf \
-    ${sysconfdir}/init.d/udmabuf.sh \
 "
 
 RPROVIDES_${PN} += "kernel-module-u-dma-buf-5.4.0-xilinx-v2020.2"
-
-do_install_append() {
-    install -d ${D}${sysconfdir}/init.d
-    install -d ${D}${sysconfdir}/rcS.d
-
-    install -m 0755 ${WORKDIR}/udmabuf.sh  ${D}${sysconfdir}/init.d/
-
-    ln -sf ../init.d/udmabuf.sh  ${D}${sysconfdir}/rcS.d/S80udmabuf
-}
+KERNEL_MODULE_AUTOLOAD += "u-dma-buf"
+KERNEL_MODULE_PROBECONF += " u-dma-buf "
+module_conf_u-dma-buf = "options u_dma_buf udmabuf0=0x1000000"
