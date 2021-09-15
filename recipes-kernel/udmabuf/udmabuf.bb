@@ -19,7 +19,7 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 SRC_URI_append = " file://0001-Update-Makefile-for-Yocto-env-variables.patch \
 "
 
-RPROVIDES_${PN} += "kernel-module-u-dma-buf-5.4.0-xilinx-v2020.2"
+RPROVIDES_${PN} += "kernel-module-u-dma-buf"
 KERNEL_MODULE_AUTOLOAD += "u-dma-buf"
 KERNEL_MODULE_PROBECONF += " u-dma-buf "
 module_conf_u-dma-buf = "options u_dma_buf udmabuf0=0x1000000"
