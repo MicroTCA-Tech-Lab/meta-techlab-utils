@@ -77,7 +77,7 @@ if {$params(axi_if) == ""} {
     if {$params(processor) == "ps7_cortexa9_0"} {
         set AXI_IF "arm_m_axi"
     } elseif {$params(processor) == "psu_cortexa53_0"} {
-        set AXI_IF "arm_lpd_m_axi"
+        set AXI_IF "arm_fpd_m_axi"
     } else {
         puts "Unsupported processor ($params(arch))"
         exit 1
