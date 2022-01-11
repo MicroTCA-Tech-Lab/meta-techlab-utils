@@ -3,7 +3,7 @@ LICENSE = "BSD"
 PV = "3.2.2"
 PR = "r0"
 
-SRC_URI = "git://github.com/ikwzm/udmabuf.git;tag=v${PV}"
+SRC_URI = "git://github.com/ikwzm/udmabuf.git;protocol=https;tag=v${PV}"
 
 LIC_FILES_CHKSUM = "file://LICENSE;md5=bebf0492502927bef0741aa04d1f35f5" 
 
