@@ -1,13 +1,25 @@
 # Enable dynamic zsh modules (some modules that oh-my-zsh depends on cannot be statically linked)
-EXTRA_OECONF_remove = "--disable-dynamic"
-EXTRA_OECONF_append = " --enable-dynamic"
+EXTRA_OECONF_remove += " --disable-dynamic"
+EXTRA_OECONF_append += " --enable-dynamic"
 
 # Raise alternatives priority for zsh
 ALTERNATIVE_PRIORITY = "110"
 
-# TODO: Add to .zshrc
-# ZSH_DISABLE_COMPFIX=true
-
-do_install_append () {
-    # Override do_install_append() from base recipe which deletes dynamic functions
+do_install_prepend() {
+    # Save dynamic modules & functions from being deleted by the original recipe
+    mkdir -p ${D}/usr/share_saved
+    ln -s ${D}/usr/share_saved ${D}/usr/share
 }
+
+do_install_append() {
+    # Restore dynamic modules & functions
+    mv ${D}/usr/share_saved ${D}/usr/share
+}
+
+# To set zsh as default shell:
+# Either put this into the image recipe:
+#   inherit extrausers
+#   EXTRA_USERS_PARAMS = "usermod -s /bin/zsh root"
+# or this into the local.conf:
+#   INHERIT += "extrausers"
+#   EXTRA_USERS_PARAMS = "usermod -s /bin/zsh root"
