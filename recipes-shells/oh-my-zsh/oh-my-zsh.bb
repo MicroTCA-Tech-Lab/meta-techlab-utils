@@ -25,7 +25,9 @@ do_install() {
     sed -i '1s/^/ZSH_DISABLE_COMPFIX=true\n/' ${ZSHRC}
     sed -i 's#ZSH=.*$#ZSH="/usr/local/oh-my-zsh"#g' ${ZSHRC}
     sed -i 's/ZSH_THEME=".*"/ZSH_THEME="agnoster"/g' ${ZSHRC}
+    mkdir -p ${D}/home/root
+    cp ${ZSHRC} ${D}/home/root
 }
 
-FILES_${PN} = "/usr/local/oh-my-zsh/* /etc/skel/.zshrc"
+FILES_${PN} = "/usr/local/oh-my-zsh/* /etc/skel/.zshrc /home/root/.zshrc"
 RDEPENDS_${PN} = "zsh"
