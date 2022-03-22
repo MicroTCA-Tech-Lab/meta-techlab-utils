@@ -1,5 +1,5 @@
 SUMMARY = "Kerberos PAM module for either MIT Kerberos or Heimdal"
-SECTION = "libs"
+SECTION = "connectivity"
 HOMEPAGE = "https://www.eyrie.org/~eagle/software/pam-krb5"
 
 LICENSE = "BSD"
