@@ -18,7 +18,7 @@ BBCLASSEXTEND = "native"
 # Make sure python3-pybind11-native uses Yocto native Python (instead of build host's Python)
 # Fixes python3-pybind11-native on Ubuntu 20.04 build hosts
 EXTRA_OECMAKE =  "-DPYBIND11_TEST=OFF \
-		-DPYTHON_EXECUTABLE=${RECIPE_SYSROOT_NATIVE}/usr/bin/python3-native/python3.7 \
+		-DPYTHON_EXECUTABLE=${RECIPE_SYSROOT_NATIVE}/usr/bin/python3-native/python3.8 \
 "
 inherit cmake setuptools3 python3native
 
