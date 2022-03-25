@@ -10,7 +10,6 @@ TECHLAB_DEVBOX_PACKAGES = " \
     zsh                 \
     oh-my-zsh           \
     tmux                \
-    fzf                 \
 "
 
 RDEPENDS_${PN} = "${TECHLAB_DEVBOX_PACKAGES}"
