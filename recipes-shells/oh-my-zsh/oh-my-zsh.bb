@@ -28,13 +28,16 @@ fi
 
 zstyle ':omz:update' mode disabled
 ZSH_DISABLE_COMPFIX=true
+
+export FZF_BASE=/usr/lib/go/src/github.com/junegunn/fzf/shell
 EOF
     cat ${OMZ_DIR}/templates/zshrc.zsh-template >> ${ZSHRC}
     sed -i 's#ZSH=.*$#ZSH="/usr/local/oh-my-zsh"#g' ${ZSHRC}
     sed -i 's/ZSH_THEME=".*"/ZSH_THEME="agnoster"/g' ${ZSHRC}
+    sed -i 's/plugins=\(.*\)/plugins=\(git fzf\)/g' ${ZSHRC}
     mkdir -p ${D}/home/root
     cp ${ZSHRC} ${D}/home/root
 }
 
 FILES_${PN} = "/usr/local/oh-my-zsh/* /etc/skel/.zshrc /home/root/.zshrc"
-RDEPENDS_${PN} = "zsh"
+RDEPENDS_${PN} = "zsh fzf"
