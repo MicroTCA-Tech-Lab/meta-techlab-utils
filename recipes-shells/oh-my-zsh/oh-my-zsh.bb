@@ -20,9 +20,16 @@ do_install() {
     cp -r ${B}/* ${OMZ_DIR}
     ZSHRC=${D}/etc/skel/.zshrc
     mkdir -p ${D}/etc/skel
-    cp ${OMZ_DIR}/templates/zshrc.zsh-template ${ZSHRC}
-    sed -i "1s/^/zstyle ':omz:update' mode disabled\n/" ${ZSHRC}
-    sed -i '1s/^/ZSH_DISABLE_COMPFIX=true\n/' ${ZSHRC}
+    cat > ${ZSHRC} <<EOF
+if [ \$(readlink /proc/self/fd/0) = "/dev/ttyPS0" ]; then
+  # TTY on serial line - try to get window size
+  setterm --resize
+fi
+
+zstyle ':omz:update' mode disabled
+ZSH_DISABLE_COMPFIX=true
+EOF
+    cat ${OMZ_DIR}/templates/zshrc.zsh-template >> ${ZSHRC}
     sed -i 's#ZSH=.*$#ZSH="/usr/local/oh-my-zsh"#g' ${ZSHRC}
     sed -i 's/ZSH_THEME=".*"/ZSH_THEME="agnoster"/g' ${ZSHRC}
     mkdir -p ${D}/home/root
