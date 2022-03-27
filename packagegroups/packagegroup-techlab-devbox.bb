@@ -10,6 +10,7 @@ TECHLAB_DEVBOX_PACKAGES = " \
     zsh                 \
     oh-my-zsh           \
     tmux                \
+    python3-ranger      \
 "
 
 RDEPENDS_${PN} = "${TECHLAB_DEVBOX_PACKAGES}"
