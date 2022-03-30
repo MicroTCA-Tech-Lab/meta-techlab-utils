@@ -16,5 +16,4 @@ TECHLAB_DEVBOX_PACKAGES = " \
     zsh                 \
 "
 
-DEFAULT_TIMEZONE = "Europe/Berlin"
 RDEPENDS_${PN} = "${TECHLAB_DEVBOX_PACKAGES}"
