@@ -33,3 +33,9 @@ SRCREV_go-sync="036812b2e83c0ddf193dd5a34e034151da389d09"
 SRCREV_go-sys="0f9fa26af87c481a6877a4ca1330699ba9a30673"
 
 inherit go
+
+do_install_append() {
+    FZFSH_DIR=${D}/usr/lib/fzf/shell
+    mkdir -p ${FZFSH_DIR}
+    cp -r ${B}/src/${GO_IMPORT}/shell/* ${FZFSH_DIR}
+}

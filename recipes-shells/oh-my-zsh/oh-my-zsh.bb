@@ -29,7 +29,7 @@ fi
 zstyle ':omz:update' mode disabled
 ZSH_DISABLE_COMPFIX=true
 
-export FZF_BASE=/usr/lib/go/src/github.com/junegunn/fzf/shell
+export FZF_BASE=/usr/lib/fzf/shell
 EOF
     cat ${OMZ_DIR}/templates/zshrc.zsh-template >> ${ZSHRC}
     sed -i 's#ZSH=.*$#ZSH="/usr/local/oh-my-zsh"#g' ${ZSHRC}
@@ -40,4 +40,7 @@ EOF
 }
 
 FILES_${PN} = "/usr/local/oh-my-zsh/* /etc/skel/.zshrc /home/root/.zshrc"
-RDEPENDS_${PN} = "zsh fzf"
+RDEPENDS_${PN} += " zsh fzf"
+
+# for fzf history widget
+RDEPENDS_${PN} += " perl"
