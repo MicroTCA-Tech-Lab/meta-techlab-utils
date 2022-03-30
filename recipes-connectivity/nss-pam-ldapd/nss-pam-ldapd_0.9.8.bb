@@ -23,8 +23,7 @@ SRC_URI = "\
 inherit useradd
 
 USERADD_PACKAGES = "${PN}"
-USERADD_PARAM_${PN} = "-r nslcd -s /bin/false"
-
+USERADD_PARAM_${PN} = "--system --no-create-home --shell /bin/false nslcd"
 inherit autotools
 
 SRC_URI[md5sum] = "8c99fdc54f4bf9aca8c5f53fdb1403ff"
