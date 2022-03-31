@@ -15,7 +15,6 @@ TECHLAB_DEVBOX_PACKAGES = " \
     python3-ranger      \
     fzf                 \
     zsh                 \
-    nss-pam-ldapd        \
     desy-login-support   \
 "
 

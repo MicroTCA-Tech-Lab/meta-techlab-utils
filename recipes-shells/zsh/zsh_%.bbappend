@@ -16,6 +16,11 @@ do_install_append() {
     mv ${D}/usr/share_saved ${D}/usr/share
 }
 
+# Depend on base-files to make sure we can append zsh to /etc/shells
+RDEPENDS_${PN} = "          \
+    base-files              \
+"
+
 # To set zsh as default shell:
 # Either put this into the image recipe:
 #   inherit extrausers
