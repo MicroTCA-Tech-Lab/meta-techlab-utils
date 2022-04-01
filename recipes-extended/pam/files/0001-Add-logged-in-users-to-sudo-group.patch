@@ -1,0 +1,25 @@
+From 0bd00d3f050b103c2c08cf924db427380081fd3f Mon Sep 17 00:00:00 2001
+From: Patrick Huesmann <patrick.huesmann@desy.de>
+Date: Fri, 1 Apr 2022 12:40:38 +0200
+Subject: [PATCH] Add logged in users to sudo group
+
+---
+ modules/pam_group/group.conf | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/modules/pam_group/group.conf b/modules/pam_group/group.conf
+index 7c07a26..b34e875 100644
+--- a/modules/pam_group/group.conf
++++ b/modules/pam_group/group.conf
+@@ -104,3 +104,8 @@
+ #
+ # End of group.conf file
+ #
++
++# Add all logged in users to sudo group
++login;*;*;Al0000-2400;sudo
++dropbear;*;*;Al0000-2400;sudo
++sshd;*;*;Al0000-2400;sudo                      
+-- 
+2.25.1
+
