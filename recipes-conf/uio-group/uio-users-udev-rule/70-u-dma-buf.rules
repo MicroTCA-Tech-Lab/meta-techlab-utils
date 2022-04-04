@@ -1,0 +1,1 @@
+SUBSYSTEM=="u-dma-buf", GROUP="uio_users", MODE="0660"
