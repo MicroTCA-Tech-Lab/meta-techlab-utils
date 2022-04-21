@@ -5,7 +5,7 @@ LICENSE = "CLOSED"
 PR = "r0"
 
 SRC_URI = " \
-    git://git@msktechvcs.desy.de/huesmann/desy-login-support.git;protocol=ssh \
+    git://git@msktechvcs.desy.de/techlab/software/internal/desy-login-support.git;protocol=ssh \
 "
 
 SRC_URI[md5sum] = "934bd36a4a3b1e7912fdff3ae764c7b6"
