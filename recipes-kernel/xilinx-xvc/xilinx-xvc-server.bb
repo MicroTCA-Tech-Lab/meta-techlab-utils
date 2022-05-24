@@ -23,7 +23,7 @@ FILES_${PN} = "\
 EXTRA_OEMAKE = "'MYCC=${CC}'"
 INSANE_SKIP_${PN} = "ldflags"
 
-RDEPENDS_${PN} = "bash"
+RDEPENDS_${PN} = "bash coreutils xilinx-xvc-driver"
 
 do_compile() {
   oe_runmake xvcServer_ioctl
