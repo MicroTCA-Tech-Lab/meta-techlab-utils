@@ -10,7 +10,7 @@
 LOG_FILE=/var/log/xvc-server.log
 LOCK_FILE=/var/lock/subsys/xvc-server-service
 
-# Start the service FOO
+# Start the XVC service
 start() {
     if [ -f $LOCK_FILE ]; then
         echo "XVC server already running"
@@ -18,14 +18,14 @@ start() {
     fi
 
     echo "Starting XVC server" >> $LOG_FILE
-    unbuffer /opt/xilinx/xvcServer_ioctl >> $LOG_FILE &
+    stdbuf -oL /opt/xilinx/xvcServer_ioctl >> $LOG_FILE &
 
     ### Create the lock file ###
     touch $LOCK_FILE
     success $"XVC server startup"
 }
 
-# Restart the service FOO
+# Restart the XVC service
 stop() {
     echo "Stopping XVC server" >> $LOG_FILE
     killproc xvcServer_ioctl
