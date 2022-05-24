@@ -14,10 +14,11 @@ SRC_URI = "\
   git://github.com/Xilinx/XilinxVirtualCable.git \
 "
 
+# This also works on Zynq 7000
 S = "${WORKDIR}/git/zynqMP/src/driver"
 
 SRC_URI_append_damc-fmc1z7io = "\
-  file://0001-Modifiy-Makefile-for-Zynq7000.patch \
+  file://0001-Modify-Makefile-for-Zynq7000.patch \
 "
 
 RPROVIDES_${PN} += "kernel-module-xilinx-xvc-driver"
