@@ -29,25 +29,20 @@ bitfile_from_xsa() {
 do_configure_append() {
     if [ ${FPGA_MNGR_RECONFIG_ENABLE} = "1" ]; then
         # Support multiple PL variants in one single Yocto image.
-
-        for XSA_DIR in ${RECIPE_SYSROOT}/opt/xilinx/hw-design/pl-*; do
-            XSA_DIR_BASE=$(basename ${XSA_DIR})
-            PL_VARIANT=$(echo ${XSA_DIR_BASE} | cut -d- -f2)
-
-            echo "XSA_DIR_BASE: ${XSA_DIR_BASE}"
+        HW_DESIGNS=${RECIPE_SYSROOT}/opt/xilinx/hw-design
+        for PL_VARIANT in $(cat ${HW_DESIGNS}/pl-variants); do
             echo "PL_VARIANT: ${PL_VARIANT}"
-
-            bitfile_from_xsa ${XSA_DIR}/design.xsa ${PL_VARIANT}
+            bitfile_from_xsa ${HW_DESIGNS}/${PL_VARIANT}/design.xsa ${PL_VARIANT}
         done
     fi
 }
 
 do_install_append() {
     if [ ${FPGA_MNGR_RECONFIG_ENABLE} = "1" ]; then
-        for HWPROJ_VAR in ${XSCTH_WS}/${XSCTH_PROJ}-*-hwproj; do
+        HW_DESIGNS=${RECIPE_SYSROOT}/opt/xilinx/hw-design
+        for PL_VARIANT in $(cat ${HW_DESIGNS}/pl-variants); do
+            HWPROJ_VAR=${XSCTH_WS}/${XSCTH_PROJ}-${PL_VARIANT}-hwproj;
             echo HWPROJ: "${HWPROJ_VAR}"
-            HWPROJ_BASENAME=$(basename ${HWPROJ_VAR})
-            PL_VARIANT=$(echo ${HWPROJ_BASENAME} | cut -d- -f3)
 
             install -d ${D}/boot/bitstream-${PL_VARIANT}
             install -Dm 0644 ${HWPROJ_VAR}/*.bit ${D}/boot/bitstream-${PL_VARIANT}

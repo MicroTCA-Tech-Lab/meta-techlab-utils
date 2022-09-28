@@ -60,14 +60,11 @@ dts_from_xsa() {
 do_configure_append() {
     # Support multiple PL variants in one single Yocto image.
 
-    for XSA_DIR in ${RECIPE_SYSROOT}/opt/xilinx/hw-design/pl-*; do
-        XSA_DIR_BASE=$(basename ${XSA_DIR})
-        PL_VARIANT=$(echo ${XSA_DIR_BASE} | cut -d- -f2)
-
-        echo "XSA_DIR_BASE: ${XSA_DIR_BASE}"
+    HW_DESIGNS=${RECIPE_SYSROOT}/opt/xilinx/hw-design
+    for PL_VARIANT in $(cat ${HW_DESIGNS}/pl-variants); do
         echo "PL_VARIANT: ${PL_VARIANT}"
 
-        dts_from_xsa ${XSA_DIR}/design.xsa ${PL_VARIANT}
+        dts_from_xsa ${HW_DESIGNS}/${PL_VARIANT}/design.xsa ${PL_VARIANT}
     done
 }
 
