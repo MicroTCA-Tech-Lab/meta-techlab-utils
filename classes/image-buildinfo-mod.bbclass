@@ -152,18 +152,19 @@ def image_version_info(d):
     manifests_rev = run_git('--no-pager describe --always --tags --match=[vV]*.* --abbrev=8 --long',
                             cwd=manifests_dir).strip()
     
-    m_ver_str = 'Manifest: '
     # e.g. v0.0-0-gb3d299c0
     try:
         m_version, m_num_commits, m_hash = manifests_rev.split('-')
         if m_num_commits != '0':
-            m_ver_str += manifests_rev
+            m_ver_str = manifests_rev
         else:
-            m_ver_str += m_version
+            m_ver_str = m_version
 
     except ValueError:
         m_hash = manifests_rev
-        m_ver_str += f'N/A ({m_hash})'
+        m_ver_str = f'N/A ({m_hash})'
+  
+    manifest_status = f'Manifest: {m_ver_str}'
 
     # Check if layers have checked-in (clean) state or modified
     layers_clean = all_layers_clean(d)
@@ -177,7 +178,7 @@ def image_version_info(d):
     image_version = f'Image version: ' + (
         m_ver_str if pin_clean and layers_clean else 'N/A'
     )
-    return '\n'.join((m_ver_str, layer_status, pin_mismatch, image_version))
+    return '\n'.join((manifest_status, layer_status, pin_mismatch, image_version))
 
 # Write build information to target filesystem
 python buildinfo () {
