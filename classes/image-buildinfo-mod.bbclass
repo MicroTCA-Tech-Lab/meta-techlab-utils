@@ -18,6 +18,12 @@
 def run_git(cmdline, cwd):
     import bb.process
     result, _ = bb.process.run('git -c safe.directory="*" ' + cmdline, cwd=cwd)
+# ************************************************************************************
+# If the code breaks here, it's probably due to an old (pre-v2.35.2) Git version
+# which may already include the "unsafe repository / dubious ownership" checks,
+# but not the "safe.directory" option yet! To update Git to the latest version:
+# sudo add-apt-repository ppa:git-core/ppa && sudo apt update && sudo apt install git
+# ************************************************************************************
     return result.strip()
 
 def mod_get_metadata_git_branch(path):
