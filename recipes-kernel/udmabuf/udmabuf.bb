@@ -1,10 +1,10 @@
 DESCRIPTION = "udmabuf(User space mappable DMA Buffer)"
 LICENSE = "BSD"
-PV = "3.2.2"
+PV = "4.0.0"
 PR = "r0"
 
 SRC_URI = "git://github.com/ikwzm/udmabuf.git;protocol=https"
-SRCREV = "c8828301e794dbb7a2a7afbd1e75c00e0d7564bd"
+SRCREV = "9b943d49abc9c92a464e4c71e83d1c479ebbf80e"
 
 LIC_FILES_CHKSUM = "file://LICENSE;md5=bebf0492502927bef0741aa04d1f35f5" 
 
@@ -15,12 +15,19 @@ inherit module
 # https://lists.yoctoproject.org/pipermail/meta-intel/2018-September/005546.html
 DEPENDS += "xz-native bc-native bison-native"
 
-# patches
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
-SRC_URI_append = " file://0001-Update-Makefile-for-Yocto-env-variables.patch \
-"
+RPROVIDES_${PN} += " kernel-module-u-dma-buf kernel-module-u-dma-buf-mgr"
+KERNEL_MODULE_AUTOLOAD += " u-dma-buf u-dma-buf-mgr"
+KERNEL_MODULE_PROBECONF += "u-dma-buf"
 
-RPROVIDES_${PN} += "kernel-module-u-dma-buf"
-KERNEL_MODULE_AUTOLOAD += "u-dma-buf"
-KERNEL_MODULE_PROBECONF += " u-dma-buf "
-module_conf_u-dma-buf = "options u_dma_buf udmabuf0=0x1000000"
+# Copied from module.bbclass, with added CONFIG_U_DMA_BUF_MGR
+module_do_compile() {
+	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
+	oe_runmake KERNEL_PATH=${STAGING_KERNEL_DIR}   \
+		   KERNEL_VERSION=${KERNEL_VERSION}    \
+		   CC="${KERNEL_CC}" LD="${KERNEL_LD}" \
+		   AR="${KERNEL_AR}" \
+	           O=${STAGING_KERNEL_BUILDDIR} \
+		   KBUILD_EXTRA_SYMBOLS="${KBUILD_EXTRA_SYMBOLS}" \
+           CONFIG_U_DMA_BUF_MGR=m \
+		   ${MAKE_TARGETS}
+}
