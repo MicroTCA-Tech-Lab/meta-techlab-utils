@@ -5,15 +5,11 @@ LICENSE="CLOSED"
 inherit xsctbase
 
 # copied from fpga-manager-util_1.0.bb
-REPO ??= "git://github.com/xilinx/device-tree-xlnx.git;protocol=https"
-BRANCH ??= "master"
-BRANCHARG = "${@['nobranch=1', 'branch=${BRANCH}'][d.getVar('BRANCH') != '']}"
-SRC_URI = "${REPO};${BRANCHARG}"
+require recipes-bsp/device-tree/device-tree.inc
 
 S = "${WORKDIR}/git"
 B = "${WORKDIR}/build"
 
-SRCREV ??= "bc8445833318e9320bf485ea125921eecc3dc97a"
 PV = "xilinx+git${SRCPV}"
 
 # custom part
