@@ -12,7 +12,7 @@ SRC_URI[sha256sum] = "503cbe2cb1aff4bdfda3bcf7f93f94fb6ba52c26d708934e7039b2182f
 
 DEPENDS = "libpam krb5"
 
-inherit distro_features_check
+inherit features_check
 REQUIRED_DISTRO_FEATURES = "pam"
 
 inherit autotools
