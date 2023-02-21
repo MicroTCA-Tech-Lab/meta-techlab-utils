@@ -5,15 +5,15 @@ package require cmdline
 package require yaml
 
 set option {
-    {hdf.arg	""			"hardware Definition file"}
-    {processor.arg	""			"target processor"}
-    {rp.arg		""			"repo path"}
-    {pname.arg	""			"Project Name"}
-    {ws.arg		""			"Work Space Path"}
-    {arch.arg	"64"			"32/64 bit architecture"}
-    {overlay.arg	"0"			"Create an overlay"}
-    {out_dts.arg	""			"Output filename"}
-    {axi_if.arg	""			"AXI interface"}
+    {hdf.arg           ""   "hardware Definition file"}
+    {processor_ip.arg  ""   "target processor"}
+    {rp.arg            ""   "repo path"}
+    {pname.arg         ""   "Project Name"}
+    {ws.arg            ""   "Work Space Path"}
+    {arch.arg          "64" "32/64 bit architecture"}
+    {overlay.arg       "0"  "Create an overlay"}
+    {out_dts.arg       ""   "Output filename"}
+    {axi_if.arg        ""   "AXI interface"}
 }
 
 set usage  "xsct app.tcl <arguments>"
@@ -65,24 +65,20 @@ if {$params(arch) == 64} {
     hsi_utils_add_new_dts_param $bus_node "#size-cells" "2" comment
 }
 
-if {$params(processor) == "ps7_cortexa9_0"} {
+if {$params(processor_ip) == "ps7_cortexa9"} {
     set IRQ_OFFSET 29
     set IRQ_CTRL_NAME intc
-} elseif {$params(processor) == "psu_cortexa53_0"} {
+    set AXI_IF "arm_m_axi"
+} elseif {$params(processor_ip) == "psu_cortexa53"} {
     set IRQ_OFFSET 89
     set IRQ_CTRL_NAME gic
+    set AXI_IF "arm_fpd_m_axi"
+} else {
+    puts "Unsupported processor ($params(arch))"
+    exit 1
 }
 
-if {$params(axi_if) == ""} {
-    if {$params(processor) == "ps7_cortexa9_0"} {
-        set AXI_IF "arm_m_axi"
-    } elseif {$params(processor) == "psu_cortexa53_0"} {
-        set AXI_IF "arm_fpd_m_axi"
-    } else {
-        puts "Unsupported processor ($params(arch))"
-        exit 1
-    }
-} else {
+if {$params(axi_if) != ""} {
     set AXI_IF $params(axi_if)
 }
 
@@ -241,5 +237,5 @@ foreach cell [hsi::get_cells] {
 }
 
 
-hsi::create_sw_design dt1 -os device_tree -proc $params(processor)
+hsi::create_sw_design dt1 -os device_tree -proc $params(processor_ip)_0
 hsi::generate_target -dir dts_app
