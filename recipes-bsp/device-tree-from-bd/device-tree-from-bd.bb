@@ -45,7 +45,7 @@ dts_from_xsa() {
     echo "MISC_ARG is ${MISC_ARG}"
     echo "APP_ARG is ${APP_ARG}"
 
-    VAR_HW_ARG="-processor ${XSCTH_PROC} -hdf ${XSA_PATH} -arch ${XSCTH_ARCH}"
+    VAR_HW_ARG="-processor_ip ${XSCTH_PROC_IP} -hdf ${XSA_PATH} -arch ${XSCTH_ARCH}"
 
     echo "Using xsct from: $(which xsct)"
     echo "cmd is: xsct -sdx -nodisp ${XSCTH_SCRIPT} ${PROJ_ARG} ${VAR_HW_ARG} ${APP_ARG} ${MISC_ARG}"

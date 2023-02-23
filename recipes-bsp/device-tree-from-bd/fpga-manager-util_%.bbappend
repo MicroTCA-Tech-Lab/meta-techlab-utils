@@ -1,10 +1,9 @@
 do_compile_prepend() {
     if [ ${FPGA_MNGR_RECONFIG_ENABLE} = "1" ]; then
         # Generate bin file for variants
-        for BITSTREAM_VAR in ${RECIPE_SYSROOT}/boot/bitstream-*/; do
+        for BITSTREAM_VAR in ${RECIPE_SYSROOT}/boot/bitstream/variants/*/; do
             echo BITSTREAM: ${BITSTREAM_VAR}
-            BITSTREAM_BASENAME=$(basename ${BITSTREAM_VAR})
-            PL_VARIANT=$(echo ${BITSTREAM_BASENAME} | cut -d- -f2)
+            PL_VARIANT=$(basename ${BITSTREAM_VAR})
             echo PL_VARIANT: ${PL_VARIANT}
         
             VAR_DESTDIR=${XSCTH_WS}/var-${PL_VARIANT}
@@ -28,7 +27,7 @@ do_install() {
             PL_VARIANT=$(echo $(basename ${VARIANT_DIR}) | cut -d- -f2)
             echo PL_VARIANT: ${PL_VARIANT}
         
-            VAR_DESTDIR=${D}/lib/firmware/base/${PL_VARIANT}
+            VAR_DESTDIR=${D}/lib/firmware/xilinx/base/${PL_VARIANT}
 
             # Install base hdf bin & dtbo
             newname=`basename -s .bin_base ${VARIANT_DIR}/*.bit.bin_base`
