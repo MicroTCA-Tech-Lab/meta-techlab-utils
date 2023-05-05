@@ -4,7 +4,7 @@ do_compile_prepend() {
         for BITSTREAM_VAR in ${RECIPE_SYSROOT}/boot/bitstream-*/; do
             echo BITSTREAM: ${BITSTREAM_VAR}
             BITSTREAM_BASENAME=$(basename ${BITSTREAM_VAR})
-            PL_VARIANT=$(echo ${BITSTREAM_BASENAME} | cut -d- -f2)
+            PL_VARIANT=$(echo ${BITSTREAM_BASENAME} | cut -d- -f2-)
             echo PL_VARIANT: ${PL_VARIANT}
         
             VAR_DESTDIR=${XSCTH_WS}/var-${PL_VARIANT}
@@ -25,7 +25,7 @@ do_install() {
     if [ ${FPGA_MNGR_RECONFIG_ENABLE} = "1" ]; then
         for VARIANT_DIR in ${XSCTH_WS}/var-*/; do
             echo VARIANT_DIR: ${VARIANT_DIR}
-            PL_VARIANT=$(echo $(basename ${VARIANT_DIR}) | cut -d- -f2)
+            PL_VARIANT=$(echo $(basename ${VARIANT_DIR}) | cut -d- -f2-)
             echo PL_VARIANT: ${PL_VARIANT}
         
             VAR_DESTDIR=${D}/lib/firmware/base/${PL_VARIANT}
