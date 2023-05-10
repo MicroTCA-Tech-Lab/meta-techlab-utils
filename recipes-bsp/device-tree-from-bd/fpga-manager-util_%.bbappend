@@ -5,7 +5,10 @@ do_compile_prepend() {
             echo BITSTREAM: ${BITSTREAM_VAR}
             PL_VARIANT=$(basename ${BITSTREAM_VAR})
             echo PL_VARIANT: ${PL_VARIANT}
-        
+            if [ "${PL_VARIANT}" = "*" ]; then
+                echo "No PL variants used - aborting"
+                break
+            fi
             VAR_DESTDIR=${XSCTH_WS}/var-${PL_VARIANT}
             mkdir -p ${VAR_DESTDIR}
             cp ${RECIPE_SYSROOT}/boot/devicetree/pl-var-${PL_VARIANT}.dtbo ${VAR_DESTDIR}/base.dtbo
@@ -26,7 +29,11 @@ do_install() {
             echo VARIANT_DIR: ${VARIANT_DIR}
             PL_VARIANT=$(echo $(basename ${VARIANT_DIR}) | cut -d- -f2)
             echo PL_VARIANT: ${PL_VARIANT}
-        
+            if [ "${PL_VARIANT}" = "*" ]; then
+                echo "No PL variants used - aborting"
+                break
+            fi
+
             VAR_DESTDIR=${D}/lib/firmware/xilinx/base/${PL_VARIANT}
 
             # Install base hdf bin & dtbo
