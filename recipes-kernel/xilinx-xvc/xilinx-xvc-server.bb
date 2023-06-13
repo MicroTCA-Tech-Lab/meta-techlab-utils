@@ -2,7 +2,7 @@ DESCRIPTION = "Server for Xilinx Virtual Cable"
 
 PV = "1.1"
 PR = "r1"
-SRCREV="067232f9fb78972b76cd3c70c7a4c7c46b841221"
+SRCREV="a0d58e8335f969e90e544b99bb63454f8603a533"
 
 LICENSE = "CC0-1.0"
 LIC_FILES_CHKSUM = "file://xvcServer.c;beginline=0;endline=7;md5=d7978666874a6ca6d8fae19fc46bb1d1"
