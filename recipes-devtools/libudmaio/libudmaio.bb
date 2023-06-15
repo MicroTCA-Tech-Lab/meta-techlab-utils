@@ -8,7 +8,7 @@ RDEPENDS_${PN} = "boost-log boost-program-options"
 
 inherit pkgconfig cmake
 
-SRCREV = "dfd24a10cb6bb0fde9f576cdfe7d5677fb492480"
+SRCREV = "5d3a5698a6db0491a73db9c09b51491ba128654c"
 SRC_URI = "git://github.com/MicroTCA-Tech-Lab/libudmaio.git;protocol=https"
 LIC_FILES_CHKSUM = "file://LICENSE.txt;md5=e218aa5496fc02972b9c9425e527094c"
 
