@@ -1,6 +1,6 @@
 DESCRIPTION = "Userspace DMA I/O library"
 LICENSE = "BSD"
-PV = "1.2.0"
+PV = "1.3.0"
 PR = "r0"
 
 DEPENDS = "boost"
@@ -8,7 +8,7 @@ RDEPENDS_${PN} = "boost-log boost-program-options"
 
 inherit pkgconfig cmake
 
-SRCREV = "5d3a5698a6db0491a73db9c09b51491ba128654c"
+SRCREV = "704810aa1e2744b53a4e356354cdedb1e8f2fed6"
 SRC_URI = "git://github.com/MicroTCA-Tech-Lab/libudmaio.git;protocol=https"
 LIC_FILES_CHKSUM = "file://LICENSE.txt;md5=e218aa5496fc02972b9c9425e527094c"
 
