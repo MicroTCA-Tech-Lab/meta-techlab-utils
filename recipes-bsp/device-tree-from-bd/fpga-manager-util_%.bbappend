@@ -1,3 +1,6 @@
+require hdf-info.inc
+require pl-variants.inc
+
 do_compile_prepend() {
     if [ ${FPGA_MNGR_RECONFIG_ENABLE} = "1" ] && [ ${DT_FROM_BD_ENABLE} = "1" ]; then
         # Generate bin file for variants
@@ -37,4 +40,14 @@ do_install_prepend() {
     fi
 }
 
-DEPENDS += " bitstream-extraction"
+# Anonymous python function is called after parsing in each BitBake task (do_...)
+python () {
+    make_pl_subpackages(d, lambda hdf: f'/lib/firmware/base/{hdf}/*')
+}
+
+DEPENDS += " bitstream-extraction external-hdf"
+
+PKG_${PN} = "${PN}${PKG_SUFFIX}"
+PKG_${PN}-lic = "${PN}${PKG_SUFFIX}-lic"
+PKG_${PN}-base = "${PN}${PKG_SUFFIX}-base"
+PACKAGES = "${SUBPKGS} ${PN}"
