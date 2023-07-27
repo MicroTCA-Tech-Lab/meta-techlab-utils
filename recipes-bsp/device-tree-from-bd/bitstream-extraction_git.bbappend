@@ -58,7 +58,7 @@ DEPENDS += " external-hdf"
 
 # Anonymous python function is called after parsing in each BitBake task (do_...)
 python () {
-    make_pl_subpackages(d, lambda hdf: f'/boot/bitstream-{hdf}/*.bit')
+    make_pl_subpackages(d, lambda hdf: f'/boot/bitstream/variants/{hdf}/*.bit')
 }
 
 PKG_${PN} = "${PN}${PKG_SUFFIX}"
