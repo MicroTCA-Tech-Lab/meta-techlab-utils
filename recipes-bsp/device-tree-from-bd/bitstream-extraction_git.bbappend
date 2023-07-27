@@ -1,3 +1,6 @@
+require hdf-info.inc
+require pl-variants.inc
+
 bitfile_from_xsa() {
     XSA_PATH=$1
     PL_VARIANT=$2
@@ -30,7 +33,7 @@ do_configure_append() {
     if [ ${FPGA_MNGR_RECONFIG_ENABLE} = "1" ]; then
         # Support multiple PL variants in one single Yocto image.
         HW_DESIGNS=${RECIPE_SYSROOT}/opt/xilinx/hw-design
-        for PL_VARIANT in $(cat ${HW_DESIGNS}/pl-variants); do
+        for PL_VARIANT in ${PL_VARIANTS}; do
             echo "PL_VARIANT: ${PL_VARIANT}"
             bitfile_from_xsa ${HW_DESIGNS}/${PL_VARIANT}/design.xsa ${PL_VARIANT}
         done
@@ -40,7 +43,7 @@ do_configure_append() {
 do_install_append() {
     if [ ${FPGA_MNGR_RECONFIG_ENABLE} = "1" ]; then
         HW_DESIGNS=${RECIPE_SYSROOT}/opt/xilinx/hw-design
-        for PL_VARIANT in $(cat ${HW_DESIGNS}/pl-variants); do
+        for PL_VARIANT in ${PL_VARIANTS}; do
             HWPROJ_VAR=${XSCTH_WS}/${XSCTH_PROJ}-${PL_VARIANT}-hwproj;
             echo HWPROJ: "${HWPROJ_VAR}"
 
@@ -50,7 +53,14 @@ do_install_append() {
     fi
 }
 
-FILES_${PN} += "/boot/bitstream/variants/*/*.bit"
-
 # for .xsa files
 DEPENDS += " external-hdf"
+
+# Anonymous python function is called after parsing in each BitBake task (do_...)
+python () {
+    make_pl_subpackages(d, lambda hdf: f'/boot/bitstream-{hdf}/*.bit')
+}
+
+PKG_${PN} = "${PN}${PKG_SUFFIX}"
+PKG_${PN}-lic = "${PN}${PKG_SUFFIX}-lic"
+PACKAGES = "${SUBPKGS} ${PN}"

@@ -1,3 +1,6 @@
+require hdf-info.inc
+require pl-variants.inc
+
 DESCRIPTION = "Crate device tree nodes from Xilinx Block Diagram"
 SECTION = "bsp"
 LICENSE="CLOSED"
@@ -13,6 +16,9 @@ B = "${WORKDIR}/build"
 PV = "xilinx+git${SRCPV}"
 
 # custom part
+
+# This package is specific to the actual board
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 DT_FROM_BD_DTS_FILENAME ?= "app_from_bd.dts"
 
@@ -57,7 +63,7 @@ do_configure_append() {
     # Support multiple PL variants in one single Yocto image.
 
     HW_DESIGNS=${RECIPE_SYSROOT}/opt/xilinx/hw-design
-    for PL_VARIANT in $(cat ${HW_DESIGNS}/pl-variants); do
+    for PL_VARIANT in ${PL_VARIANTS}; do
         echo "PL_VARIANT: ${PL_VARIANT}"
 
         dts_from_xsa ${HW_DESIGNS}/${PL_VARIANT}/design.xsa ${PL_VARIANT}
@@ -70,10 +76,18 @@ do_install() {
     install -m 0644 ${B}/dts_app/app_from_bd_*.dts ${D}/opt/mtca-tech-lab/dt/
 }
 
+# Anonymous python function is called after parsing in each BitBake task (do_...)
+python () {
+    make_pl_subpackages(d, lambda hdf: f'/opt/mtca-tech-lab/dt/app_from_bd_{hdf}.dts')
+}
+
 FILES_${PN} = "/opt/mtca-tech-lab/dt/${DT_FROM_BD_DTS_FILENAME}"
-FILES_${PN} += "/opt/mtca-tech-lab/dt/app_from_bd_*.dts"
 
 SYSROOT_DIRS_append = "/opt/mtca-tech-lab"
 
 # for .xsa files
 DEPENDS += " external-hdf"
+
+PKG_${PN} = "${PN}${PKG_SUFFIX}"
+PKG_${PN}-lic = "${PN}${PKG_SUFFIX}-lic"
+PACKAGES = "${SUBPKGS} ${PN}"
