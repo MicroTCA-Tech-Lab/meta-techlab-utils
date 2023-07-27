@@ -107,3 +107,9 @@ PKG_${PN}-lic = "${PN}${PKG_SUFFIX}-lic"
 PACKAGES = "${SUBPKGS} ${PN}"
 
 FILES_${PN} += "${PL_VARIANTS_FILES}"
+
+# Override "do_install[noexec]" from upstream
+# TODO: Is this still necessary when dependencies are properly declared?
+python () {
+  d.delVarFlag('do_install', 'noexec')
+}
