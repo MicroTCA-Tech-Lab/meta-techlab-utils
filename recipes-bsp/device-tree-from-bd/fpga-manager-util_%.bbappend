@@ -45,7 +45,7 @@ python () {
 
     # Make sure that the main package RDEPENDS on its subpackages
     rdep = 'RDEPENDS_' + d.getVar('PN')
-    d.setVar(rdep, d.getVar(rdep) + ' ' + d.getVar('SUBPKGS'))
+    d.setVar(rdep, (d.getVar(rdep) or '') + ' ' + d.getVar('SUBPKGS'))
 }
 
 DEPENDS += " bitstream-extraction external-hdf"
