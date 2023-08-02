@@ -48,7 +48,7 @@ do_install_prepend() {
 
 # Anonymous python function is called after parsing in each BitBake task (do_...)
 python () {
-    make_pl_subpackages(d, lambda hdf: f'/lib/firmware/base/{hdf}/*')
+    make_pl_subpackages(d, lambda hdf: f'/lib/firmware/xilinx/base/{hdf}/*')
 
     # Make sure that the main package RDEPENDS on its subpackages
     rdep = 'RDEPENDS_' + d.getVar('PN')
