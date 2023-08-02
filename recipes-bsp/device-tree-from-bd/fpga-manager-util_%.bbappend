@@ -1,8 +1,7 @@
-require hdf-info.inc
 require pl-variants.inc
 
 do_compile_prepend() {
-    if [ ${FPGA_MNGR_RECONFIG_ENABLE} = "1" ] && [ ${DT_FROM_BD_ENABLE} = "1" ]; then
+    if [ "${PL_VARIANTS}" != "" ]; then
         # Generate bin file for variants
         for BITSTREAM_VAR in ${RECIPE_SYSROOT}/boot/bitstream/variants/*/; do
             echo BITSTREAM: ${BITSTREAM_VAR}
@@ -26,7 +25,7 @@ do_compile_prepend() {
 }
 
 do_install_prepend() {
-    if [ "${FPGA_MNGR_RECONFIG_ENABLE}" = "1" ] && [ "${DT_FROM_BD_ENABLE}" = "1" ]; then
+    if [ "${PL_VARIANTS}" != "" ]; then
         for VARIANT_DIR in ${XSCTH_WS}/var-*/; do
             echo VARIANT_DIR: ${VARIANT_DIR}
             PL_VARIANT=$(echo $(basename ${VARIANT_DIR}) | cut -d- -f2-)
@@ -50,11 +49,18 @@ do_install_prepend() {
 # Anonymous python function is called after parsing in each BitBake task (do_...)
 python () {
     make_pl_subpackages(d, lambda hdf: f'/lib/firmware/base/{hdf}/*')
+
+    # Make sure that the main package RDEPENDS on its subpackages
+    rdep = 'RDEPENDS_' + d.getVar('PN')
+    d.setVar(rdep, (d.getVar(rdep) or '') + ' ' + d.getVar('SUBPKGS'))
 }
 
 DEPENDS += " bitstream-extraction external-hdf"
 
-PKG_${PN} = "${PN}${PKG_SUFFIX}"
-PKG_${PN}-lic = "${PN}${PKG_SUFFIX}-lic"
-PKG_${PN}-base = "${PN}${PKG_SUFFIX}-base"
+PL_PKG_SUFFIX ?= ""
+HDF_SUFFIX ?= ""
+PKG_${PN} = "${PN}${PL_PKG_SUFFIX}${HDF_SUFFIX}"
+PKG_${PN}-lic = "${PN}${PL_PKG_SUFFIX}${HDF_SUFFIX}-lic"
+PKG_${PN}-base = "${PN}${PL_PKG_SUFFIX}${HDF_SUFFIX}-base"
+ALLOW_EMPTY_${PN}-base = "1"
 PACKAGES = "${SUBPKGS} ${PN}"

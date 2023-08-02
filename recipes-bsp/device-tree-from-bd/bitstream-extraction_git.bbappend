@@ -1,4 +1,3 @@
-require hdf-info.inc
 require pl-variants.inc
 
 bitfile_from_xsa() {
@@ -30,7 +29,7 @@ bitfile_from_xsa() {
 }
 
 do_configure_append() {
-    if [ ${FPGA_MNGR_RECONFIG_ENABLE} = "1" ]; then
+    if [ "${PL_VARIANTS}" != "" ]; then
         # Support multiple PL variants in one single Yocto image.
         HW_DESIGNS=${RECIPE_SYSROOT}/opt/xilinx/hw-design
         for PL_VARIANT in ${PL_VARIANTS}; do
@@ -41,7 +40,7 @@ do_configure_append() {
 }
 
 do_install_append() {
-    if [ ${FPGA_MNGR_RECONFIG_ENABLE} = "1" ]; then
+    if [ "${PL_VARIANTS}" != "" ]; then
         HW_DESIGNS=${RECIPE_SYSROOT}/opt/xilinx/hw-design
         for PL_VARIANT in ${PL_VARIANTS}; do
             HWPROJ_VAR=${XSCTH_WS}/${XSCTH_PROJ}-${PL_VARIANT}-hwproj;
@@ -61,6 +60,8 @@ python () {
     make_pl_subpackages(d, lambda hdf: f'/boot/bitstream/variants/{hdf}/*.bit')
 }
 
-PKG_${PN} = "${PN}${PKG_SUFFIX}"
-PKG_${PN}-lic = "${PN}${PKG_SUFFIX}-lic"
+PL_PKG_SUFFIX ?= ""
+HDF_SUFFIX ?= ""
+PKG_${PN} = "${PN}${PL_PKG_SUFFIX}${HDF_SUFFIX}"
+PKG_${PN}-lic = "${PN}${PL_PKG_SUFFIX}${HDF_SUFFIX}-lic"
 PACKAGES = "${SUBPKGS} ${PN}"

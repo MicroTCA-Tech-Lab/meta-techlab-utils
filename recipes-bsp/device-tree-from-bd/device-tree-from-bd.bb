@@ -1,4 +1,3 @@
-require hdf-info.inc
 require pl-variants.inc
 
 DESCRIPTION = "Crate device tree nodes from Xilinx Block Diagram"
@@ -65,7 +64,6 @@ do_configure_append() {
     HW_DESIGNS=${RECIPE_SYSROOT}/opt/xilinx/hw-design
     for PL_VARIANT in ${PL_VARIANTS}; do
         echo "PL_VARIANT: ${PL_VARIANT}"
-
         dts_from_xsa ${HW_DESIGNS}/${PL_VARIANT}/design.xsa ${PL_VARIANT}
     done
 }
@@ -73,7 +71,9 @@ do_configure_append() {
 do_install() {
     install -d ${D}/opt/mtca-tech-lab/dt
     install -m 0644 ${B}/dts_app/${DT_FROM_BD_DTS_FILENAME} ${D}/opt/mtca-tech-lab/dt/
-    install -m 0644 ${B}/dts_app/app_from_bd_*.dts ${D}/opt/mtca-tech-lab/dt/
+    for PL_VARIANT in ${PL_VARIANTS}; do
+        install -m 0644 ${B}/dts_app/app_from_bd_${PL_VARIANT}.dts ${D}/opt/mtca-tech-lab/dt/
+    done
 }
 
 # Anonymous python function is called after parsing in each BitBake task (do_...)
@@ -88,6 +88,8 @@ SYSROOT_DIRS_append = "/opt/mtca-tech-lab"
 # for .xsa files
 DEPENDS += " external-hdf"
 
-PKG_${PN} = "${PN}${PKG_SUFFIX}"
-PKG_${PN}-lic = "${PN}${PKG_SUFFIX}-lic"
+PL_PKG_SUFFIX ?= ""
+HDF_SUFFIX ?= ""
+PKG_${PN} = "${PN}${PL_PKG_SUFFIX}${HDF_SUFFIX}"
+PKG_${PN}-lic = "${PN}${PL_PKG_SUFFIX}${HDF_SUFFIX}-lic"
 PACKAGES = "${SUBPKGS} ${PN}"
