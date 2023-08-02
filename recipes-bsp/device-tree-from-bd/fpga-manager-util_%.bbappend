@@ -23,7 +23,7 @@ do_compile_prepend() {
 
 do_install_prepend() {
     if [ "${PL_VARIANTS}" != "" ]; then
-            for VARIANT_DIR in ${XSCTH_WS}/var-*/; do
+        for VARIANT_DIR in ${XSCTH_WS}/var-*/; do
             echo VARIANT_DIR: ${VARIANT_DIR}
             PL_VARIANT=$(echo $(basename ${VARIANT_DIR}) | cut -d- -f2-)
             echo PL_VARIANT: ${PL_VARIANT}
@@ -51,4 +51,5 @@ HDF_SUFFIX ?= ""
 PKG_${PN} = "${PN}${PL_PKG_SUFFIX}${HDF_SUFFIX}"
 PKG_${PN}-lic = "${PN}${PL_PKG_SUFFIX}${HDF_SUFFIX}-lic"
 PKG_${PN}-base = "${PN}${PL_PKG_SUFFIX}${HDF_SUFFIX}-base"
+ALLOW_EMPTY_${PN}-base = "1"
 PACKAGES = "${SUBPKGS} ${PN}"
