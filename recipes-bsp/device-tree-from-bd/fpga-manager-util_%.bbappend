@@ -1,46 +1,26 @@
 require pl-variants.inc
 
 do_compile_prepend() {
-    if [ "${PL_VARIANTS}" != "" ]; then
-        # Generate bin file for variants
-        for BITSTREAM_VAR in ${RECIPE_SYSROOT}/boot/bitstream/variants/*/; do
-            echo BITSTREAM: ${BITSTREAM_VAR}
-            BITSTREAM_BASENAME=$(basename ${BITSTREAM_VAR})
-            PL_VARIANT=$(echo ${BITSTREAM_BASENAME} | cut -d- -f2-)
-            echo PL_VARIANT: ${PL_VARIANT}
-            if [ "${PL_VARIANT}" = "*" ]; then
-                echo "No PL variants used - aborting"
-                break
-            fi
-            VAR_DESTDIR=${XSCTH_WS}/var-${PL_VARIANT}
-            mkdir -p ${VAR_DESTDIR}
-            cp ${RECIPE_SYSROOT}/boot/devicetree/pl-var-${PL_VARIANT}.dtbo ${VAR_DESTDIR}/base.dtbo
-
-            BITPATH=${BITSTREAM_VAR}/*.bit
-            hdf=base
-            generate_bin
-            mv *.bit.bin_base ${VAR_DESTDIR}
-        done
-    fi
+    # Generate bin file for variants
+    for PL_VARIANT in ${PL_VARIANTS}; do
+        BITPATH=${RECIPE_SYSROOT}/boot/bitstream/variants/${PL_VARIANT}/*.bit
+        VAR_DESTDIR=${XSCTH_WS}/var-${PL_VARIANT}
+        mkdir -p ${VAR_DESTDIR}
+        hdf=base
+        generate_bin
+        mv *.bit.bin_base ${VAR_DESTDIR}
+    done
 }
 
 do_install_prepend() {
     if [ "${PL_VARIANTS}" != "" ]; then
-        for VARIANT_DIR in ${XSCTH_WS}/var-*/; do
-            echo VARIANT_DIR: ${VARIANT_DIR}
-            PL_VARIANT=$(echo $(basename ${VARIANT_DIR}) | cut -d- -f2-)
-            echo PL_VARIANT: ${PL_VARIANT}
-            if [ "${PL_VARIANT}" = "*" ]; then
-                echo "No PL variants used - aborting"
-                break
-            fi
-
+        for PL_VARIANT in ${PL_VARIANTS}; do
             VAR_DESTDIR=${D}/lib/firmware/xilinx/base/${PL_VARIANT}
 
             # Install base hdf bin & dtbo
             # We force the binfile name to 'pl-full.bit.bin' both here and in device-tree.bbappend
-            install -Dm 0644 ${VARIANT_DIR}/*.bit.bin_base ${VAR_DESTDIR}/pl-full.bit.bin
-            install -Dm 0644 ${VARIANT_DIR}/base.dtbo ${VAR_DESTDIR}
+            install -Dm 0644 ${XSCTH_WS}/var-${PL_VARIANT}/*.bit.bin_base ${VAR_DESTDIR}/pl-full.bit.bin
+            install -Dm 0644 ${RECIPE_SYSROOT}/boot/devicetree/pl-var-${PL_VARIANT}.dtbo ${VAR_DESTDIR}/base.dtbo
         done
         return
     fi
