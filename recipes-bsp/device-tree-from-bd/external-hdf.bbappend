@@ -44,7 +44,7 @@ do_deploy() {
 python () {
     from pathlib import Path
     import re
-    re_ver = re.compile(r'(.+)[-_](\d+\.\d+\.\d+)(-(\d+)-g([0-9a-f]+))?')
+    re_ver = re.compile(r'(.+)[-_][vV]?(\d+\.\d+\.\d+)(-(\d+)-g([0-9a-f]+))?')
 
     # Get HDF basename and version info from filename
     # e.g. 'zu19eg_1.2.3-4-g10ba99f8.xsa'
