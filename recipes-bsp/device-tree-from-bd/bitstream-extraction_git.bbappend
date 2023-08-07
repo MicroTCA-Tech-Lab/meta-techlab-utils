@@ -46,8 +46,8 @@ do_install_append() {
             HWPROJ_VAR=${XSCTH_WS}/${XSCTH_PROJ}-${PL_VARIANT}-hwproj;
             echo HWPROJ: "${HWPROJ_VAR}"
 
-            install -d ${D}/boot/bitstream/variants/${PL_VARIANT}
-            install -Dm 0644 ${HWPROJ_VAR}/*.bit ${D}/boot/bitstream/variants/${PL_VARIANT}
+            install -d ${D}/boot/bitstream-${PL_VARIANT}
+            install -Dm 0644 ${HWPROJ_VAR}/*.bit ${D}/boot/bitstream-${PL_VARIANT}
         done
     fi
 }
@@ -57,7 +57,12 @@ DEPENDS += " external-hdf"
 
 # Anonymous python function is called after parsing in each BitBake task (do_...)
 python () {
-    make_pl_subpackages(d, lambda hdf: f'/boot/bitstream/variants/{hdf}/*.bit')
+    make_pl_subpackages(d, lambda hdf: f'/boot/bitstream-{hdf}/*.bit')
+
+    # Make sure that the variants subdirs are included in sysroot
+    sdirs = 'SYSROOT_DIRS'
+    d.setVar(sdirs, (d.getVar(sdirs) or '') + ' ' +
+             ' '.join(f'/boot/bitstream-{hdf}' for hdf in d.getVar('PL_VARIANTS').split()))
 }
 
 PL_PKG_SUFFIX ?= ""
