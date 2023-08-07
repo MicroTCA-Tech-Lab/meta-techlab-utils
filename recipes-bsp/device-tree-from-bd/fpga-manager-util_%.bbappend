@@ -3,7 +3,7 @@ require pl-variants.inc
 do_compile_prepend() {
     # Generate bin file for variants
     for PL_VARIANT in ${PL_VARIANTS}; do
-        BITPATH=${RECIPE_SYSROOT}/boot/bitstream/variants/${PL_VARIANT}/*.bit
+        BITPATH=${RECIPE_SYSROOT}/boot/bitstream-${PL_VARIANT}/*.bit
         VAR_DESTDIR=${XSCTH_WS}/var-${PL_VARIANT}
         mkdir -p ${VAR_DESTDIR}
         hdf=base
@@ -15,7 +15,7 @@ do_compile_prepend() {
 do_install_prepend() {
     if [ "${PL_VARIANTS}" != "" ]; then
         for PL_VARIANT in ${PL_VARIANTS}; do
-            VAR_DESTDIR=${D}/lib/firmware/xilinx/base/${PL_VARIANT}
+            VAR_DESTDIR=${D}/lib/firmware/base/${PL_VARIANT}
 
             # Install base hdf bin & dtbo
             # We force the binfile name to 'pl-full.bit.bin' both here and in device-tree.bbappend
