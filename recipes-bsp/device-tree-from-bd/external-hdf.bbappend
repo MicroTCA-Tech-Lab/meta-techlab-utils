@@ -61,7 +61,7 @@ python () {
     def hdf_basename(hdf_fullname):
         m = re_hdfname.match(hdf_fullname)
         if not m:
-            return hdf_fullname
+            return hdf_fullname.replace('.xsa', '')
         return m.groups()[0]
     
     # Resolve single PL file pointed at by HDF_PATH (may contain glob) and pick up version/name
@@ -109,16 +109,20 @@ python () {
         if s.endswith('.' + d.getVar('HDF_EXT'))
     ]
 
-    # Sort base names to hdf_list order
-    hdf_paths = [
-        next(filter(lambda b: hdf_basename(b) == h, base_names))
-        for h in hdf_list
-    ]
+    try:
+        # Sort base names to hdf_list order
+        hdf_paths = [
+            next(filter(lambda b: hdf_basename(b) == h, base_names))
+            for h in hdf_list
+        ]
+    except Exception as e:
+        raise RuntimeError(f'{e}: base_names {base_names}, hdf_list {hdf_list}')
+
     d.setVar('PL_VARIANTS_PATHS', ' '.join(hdf_paths))
 
     # Get versions from file names
     hdf_vers = [hdf_verinfo(n) for n in hdf_paths]
-    d.setVar('PL_VARIANTS_VERSIONS', ' '.join(hdf_vers))
+    d.setVar('PL_VARIANTS_VERSIONS', ' '.join(v or 'None' for v in hdf_vers))
 
     # Get default variant
     pl_variants_default = d.getVar('PL_VARIANTS_DEFAULT') or hdf_list[0]
