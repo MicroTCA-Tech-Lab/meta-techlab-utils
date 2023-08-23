@@ -44,25 +44,34 @@ do_deploy() {
 python () {
     from pathlib import Path
     import re
-    re_hdfname = re.compile(r'(.+)[-_][vV]?(\d+\.\d+\.\d+)(-(\d+)-g([0-9a-f]+))?')
+    re_hdfname = re.compile(
+        r'(?P<basename>.+)[-_][vV]?(?P<version>\d+\.\d+\.\d+)(?P<opt1>-(?P<commits>\d+)-g(?P<hash>[0-9a-f]+))?(?P<opt2>-(?P<branch>.+))?$'
+    )
 
     # Get HDF version info from filename
-    # e.g. 'zu19eg_1.2.3-4-g10ba99f8.xsa'
+    # e.g. 'zu19eg_1.2.3-4-g10ba99f8-branchname.xsa'
     def hdf_verinfo(hdf_fullname):
-        m = re_hdfname.match(hdf_fullname)
+        m = re_hdfname.match(hdf_fullname.replace('.xsa', ''))
         if not m:
             return None
-        g = m.groups() # ('zu19eg', '1.3.5', '-4-g10ba99f8', '4', '10ba99f8')
-        if not all(g[2:]):
-            return g[1]
-        return f'{g[1]}-git0+{g[4]}'
+        g = m.groupdict()
+        v_fmt = g['version'] # 1.2.3
+        if g['opt1']:
+            v_fmt += '-git0+' + g['hash'] # 1.2.3-git0+10ba99f8
+        return v_fmt
 
     # Get HDF basename from filename
+    # Branch name, if available, will be suffixed
     def hdf_basename(hdf_fullname):
-        m = re_hdfname.match(hdf_fullname)
+        hdf_name = hdf_fullname.replace('.xsa', '')
+        m = re_hdfname.match(hdf_name)
         if not m:
-            return hdf_fullname.replace('.xsa', '')
-        return m.groups()[0]
+            return hdf_name
+        g = m.groupdict()
+        n_fmt = g['basename'] # zu19eg
+        if g['opt2']:
+            n_fmt += '-' + g['branch'] # zu19eg-branchname
+        return n_fmt
     
     # Resolve single PL file pointed at by HDF_PATH (may contain glob) and pick up version/name
     def handle_single_hdf():
@@ -101,6 +110,7 @@ python () {
     pl_var_dir = d.getVar('PL_VARIANTS_DIR')
     if pl_var_dir:
         d.setVar('SRC_URI', src_uri_from_dir(hdf_list, pl_var_dir))
+        d.setVar('FILESEXTRAPATHS', pl_var_dir + ":" + d.getVar('FILESEXTRAPATHS'))
 
     # Get HDF versions from filenames in the SRC_URI list:
     # 1) Get base names for all SRC_URI files that are HDF files
@@ -116,7 +126,7 @@ python () {
             for h in hdf_list
         ]
     except Exception as e:
-        raise RuntimeError(f'{e}: base_names {base_names}, hdf_list {hdf_list}')
+        raise RuntimeError(f'{e}: base_names {base_names}, hdf_basenames {list(hdf_basename(b) for b in base_names)}, hdf_list {hdf_list}')
 
     d.setVar('PL_VARIANTS_PATHS', ' '.join(hdf_paths))
 
