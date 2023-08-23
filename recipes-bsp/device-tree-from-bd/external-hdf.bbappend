@@ -51,7 +51,7 @@ python () {
     # Get HDF version info from filename
     # e.g. 'zu19eg_1.2.3-4-g10ba99f8-branchname.xsa'
     def hdf_verinfo(hdf_fullname):
-        m = re_hdfname.match(hdf_fullname)
+        m = re_hdfname.match(hdf_fullname.replace('.xsa', ''))
         if not m:
             return None
         g = m.groupdict()
@@ -110,6 +110,7 @@ python () {
     pl_var_dir = d.getVar('PL_VARIANTS_DIR')
     if pl_var_dir:
         d.setVar('SRC_URI', src_uri_from_dir(hdf_list, pl_var_dir))
+        d.setVar('FILESEXTRAPATHS', pl_var_dir + ":" + d.getVar('FILESEXTRAPATHS'))
 
     # Get HDF versions from filenames in the SRC_URI list:
     # 1) Get base names for all SRC_URI files that are HDF files
