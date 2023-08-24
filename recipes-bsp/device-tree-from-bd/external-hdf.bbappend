@@ -45,13 +45,13 @@ python () {
     from pathlib import Path
     import re
     re_hdfname = re.compile(
-        r'(?P<basename>.+)[-_][vV]?(?P<version>\d+\.\d+\.\d+)(?P<opt1>-(?P<commits>\d+)-g(?P<hash>[0-9a-f]+))?(?P<opt2>-(?P<branch>.+))?$'
+        r'(?P<projname>.+)[-_][vV]?(?P<version>\d+\.\d+\.\d+)(?P<opt1>-(?P<commits>\d+)-g(?P<hash>[0-9a-f]+))?(?P<opt2>-(?P<branch>.+))?$'
     )
 
     # Get HDF version info from filename
     # e.g. 'zu19eg_1.2.3-4-g10ba99f8-branchname.xsa'
     def hdf_verinfo(hdf_fullname):
-        m = re_hdfname.match(hdf_fullname.replace('.xsa', ''))
+        m = re_hdfname.match(os.path.splitext(os.path.basename(hdf_fullname))[0])
         if not m:
             return None
         g = m.groupdict()
@@ -63,12 +63,12 @@ python () {
     # Get HDF basename from filename
     # Branch name, if available, will be suffixed
     def hdf_basename(hdf_fullname):
-        hdf_name = hdf_fullname.replace('.xsa', '')
-        m = re_hdfname.match(hdf_name)
+        hdf_filename = os.path.splitext(os.path.basename(hdf_fullname))[0]
+        m = re_hdfname.match(hdf_filename)
         if not m:
-            return hdf_name
+            return hdf_filename
         g = m.groupdict()
-        n_fmt = g['basename'] # zu19eg
+        n_fmt = g['projname'] # zu19eg
         if g['opt2']:
             n_fmt += '-' + g['branch'] # zu19eg-branchname
         return n_fmt
@@ -89,15 +89,6 @@ python () {
         d.setVar('SUBPKGS', '')
         return
 
-    # Find files found in src_dir matching the PL_VARIANTS; return SRC_URI string
-    def src_uri_from_dir(hdf_list, src_dir):
-        xsa_file_list = Path(src_dir).rglob('*.' + d.getVar('HDF_EXT'))
-        return ' '.join(
-            'file://' + str(xsa_path.relative_to(src_dir))
-            for xsa_path in xsa_file_list
-            if hdf_basename(xsa_path.stem) in hdf_list
-        )
-
     ############################################################################################
 
     hdf_list = (d.getVar('PL_VARIANTS') or '').split()
@@ -109,28 +100,32 @@ python () {
     # OK, we have PL_VARIANTS. If we also have PL_VARIANTS_DIR, populate the SRC_URI from it
     pl_var_dir = d.getVar('PL_VARIANTS_DIR')
     if pl_var_dir:
-        d.setVar('SRC_URI', src_uri_from_dir(hdf_list, pl_var_dir))
+        d.setVar('SRC_URI', ' '.join(
+            'file://' + str(xsa_path.relative_to(pl_var_dir))
+            for xsa_path in Path(pl_var_dir).rglob('*.' + d.getVar('HDF_EXT'))
+        ))
         d.setVar('FILESEXTRAPATHS', pl_var_dir + ":" + d.getVar('FILESEXTRAPATHS'))
 
-    # Get HDF versions from filenames in the SRC_URI list:
-    # 1) Get base names for all SRC_URI files that are HDF files
-    base_names = [
-        os.path.basename(s) for s in d.getVar('SRC_URI').split()
+    # Determine HDF paths and versions from filenames in the SRC_URI list:
+    # 1) Get file paths (without 'file://' or 'http://' prefix) for all SRC_URI files that are HDF files
+    file_paths = [
+        re.sub('^[a-z]+://', '', s) for s in d.getVar('SRC_URI').split()
         if s.endswith('.' + d.getVar('HDF_EXT'))
     ]
 
+    # 2) Make list of file paths, sorted to order of appearance in hdf_list
     try:
-        # Sort base names to hdf_list order
         hdf_paths = [
-            next(filter(lambda b: hdf_basename(b) == h, base_names))
+            next(filter(lambda b: hdf_basename(b) == h, file_paths))
             for h in hdf_list
         ]
     except Exception as e:
-        raise RuntimeError(f'{e}: base_names {base_names}, hdf_basenames {list(hdf_basename(b) for b in base_names)}, hdf_list {hdf_list}')
+        raise RuntimeError(f'{e}: file_paths {file_paths}, hdf_basenames {list(hdf_basename(b) for b in file_paths)}, hdf_list {hdf_list}')
 
+    # 3) Save file paths for all PL_VARIANTS to PL_VARIANTS_PATHS
     d.setVar('PL_VARIANTS_PATHS', ' '.join(hdf_paths))
 
-    # Get versions from file names
+    # 4) Get versions from file names and save them to PL_VARIANTS_VERSIONS
     hdf_vers = [hdf_verinfo(n) for n in hdf_paths]
     d.setVar('PL_VARIANTS_VERSIONS', ' '.join(v or 'None' for v in hdf_vers))
 
