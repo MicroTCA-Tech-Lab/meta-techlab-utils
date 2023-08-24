@@ -23,14 +23,18 @@ python do_install() {
             var_dest = os.path.join(hw_path, var_name)
             print(f'installing {var_path} to {var_dest}')
             os.makedirs(var_dest, exist_ok=True)
-            shutil.copy(var_path, os.path.join(var_dest, 'design.xsa'))
+            shutil.copy(
+                os.path.join(d.getVar('WORKDIR'), var_path),
+                os.path.join(var_dest, 'design.xsa'))
 
             if var_vers != 'None':
                 write_hdf_attr(d, 'version', var_vers, var_name)
 
     else:
         # Put single design from HDF_PATH
-        shutil.copy(d.getVar('HDF_ABSPATH'), os.path.join(hw_path, 'design.xsa'))
+        shutil.copy(
+            os.path.join(d.getVar('WORKDIR'), d.getVar('HDF_ABSPATH')),
+            os.path.join(hw_path, 'design.xsa'))
         write_hdf_attr(d, 'version', d.getVar('PKGV'))
         write_hdf_attr(d, 'hdf-suffix', d.getVar('HDF_SUFFIX'))
 }
@@ -38,7 +42,7 @@ python do_install() {
 do_deploy() {
 # One single .xsa has to be deployed for FSBL to pick up the PS configuration
     install -d ${DEPLOYDIR}
-    install -m 0644 ${HDF_ABSPATH} ${DEPLOYDIR}/Xilinx-${MACHINE}.${HDF_EXT}
+    install -m 0644 ${WORKDIR}/${HDF_ABSPATH} ${DEPLOYDIR}/Xilinx-${MACHINE}.${HDF_EXT}
 }
 
 python () {
