@@ -23,18 +23,14 @@ python do_install() {
             var_dest = os.path.join(hw_path, var_name)
             print(f'installing {var_path} to {var_dest}')
             os.makedirs(var_dest, exist_ok=True)
-            shutil.copy(
-                os.path.join(d.getVar('WORKDIR'), var_path),
-                os.path.join(var_dest, 'design.xsa'))
+            shutil.copy(var_path, os.path.join(var_dest, 'design.xsa'))
 
             if var_vers != 'None':
                 write_hdf_attr(d, 'version', var_vers, var_name)
 
     else:
         # Put single design from HDF_PATH
-        shutil.copy(
-            os.path.join(d.getVar('WORKDIR'), d.getVar('HDF_ABSPATH')),
-            os.path.join(hw_path, 'design.xsa'))
+        shutil.copy(d.getVar('HDF_ABSPATH'), os.path.join(hw_path, 'design.xsa'))
         write_hdf_attr(d, 'version', d.getVar('PKGV'))
         write_hdf_attr(d, 'hdf-suffix', d.getVar('HDF_SUFFIX'))
 }
@@ -42,7 +38,7 @@ python do_install() {
 do_deploy() {
 # One single .xsa has to be deployed for FSBL to pick up the PS configuration
     install -d ${DEPLOYDIR}
-    install -m 0644 ${WORKDIR}/${HDF_ABSPATH} ${DEPLOYDIR}/Xilinx-${MACHINE}.${HDF_EXT}
+    install -m 0644 ${HDF_ABSPATH} ${DEPLOYDIR}/Xilinx-${MACHINE}.${HDF_EXT}
 }
 
 python () {
@@ -79,9 +75,16 @@ python () {
     
     # Resolve single PL file pointed at by HDF_PATH (may contain glob) and pick up version/name
     def handle_single_hdf():
-        hdf_path = os.path.join(d.getVar('S'), d.getVar('HDF_PATH'))
+        hdf_path = d.getVar('HDF_PATH')
+        if hdf_path.startswith('/'):
+            # absolute path
+            hdf_path = Path('/').glob(hdf_path[1:])
+        else:
+            # path relative to S
+            hdf_path = Path(d.getVar('S')).glob(hdf_path)
+
         try:
-            hdf_path = sorted(Path('/').glob(hdf_path[1:]))[0]
+            hdf_path = sorted(hdf_path)[0]
             print(f'HDF_PATH_RESOLVED: ' + str(hdf_path))
             set_var_dynamic(d, 'HDF_ABSPATH', '', str(hdf_path))
             set_var_dynamic(d, 'HDF_SUFFIX', '', '-' + hdf_basename(hdf_path.stem))
@@ -117,10 +120,10 @@ python () {
         protocol, path = uri.split('://')
         if protocol == 'file':
             # The file fetcher preserves full directory structure
-            return path
+            return os.path.join(d.getVar('WORKDIR'), path)
         elif protocol in ('http', 'https'):
             # When fetched over HTTP, the file will show up in $WORKDIR
-            return os.path.basename(path)
+            return os.path.join(d.getVar('WORKDIR'), os.path.basename(path))
         else:
             raise RuntimeError(f'Protocol {protocol} not supported')
 
