@@ -86,8 +86,9 @@ python () {
             set_var_dynamic(d, 'HDF_ABSPATH', '', str(hdf_path))
             set_var_dynamic(d, 'HDF_SUFFIX', '', '-' + hdf_basename(hdf_path.stem))
             hdf_vers = hdf_verinfo(hdf_path.stem)
-            set_var_dynamic(d, 'PKGV', 'None', hdf_vers)
-        except Exception as e:
+            set_var_dynamic(d, 'PKGV', 'None', hdf_vers or d.getVar('PV'))
+        except Exception:
+            # xsa may not be found, befor the fetcher is run - so we can't raise error here
             set_var_dynamic(d, 'PKGV', 'None')
             print(f'xsa not found')
         d.setVar('SUBPKGS', '')
