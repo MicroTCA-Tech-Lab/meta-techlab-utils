@@ -50,3 +50,15 @@ def make_pl_subpackages(d, files_str_cb):
         set_var_dynamic(d, 'PKGV_' + subpkg, ver_str_default, ver_str)
 
     set_var_dynamic(d, 'SUBPKGS', '', ' '.join(subpkgs))
+
+# Get filename in $WORKDIR from a SRC_URI filename
+def src_uri_to_local_file(d, uri):
+    protocol, path = uri.split('://')
+    if protocol == 'file':
+        # The file fetcher preserves full directory structure
+        return os.path.join(d.getVar('WORKDIR'), path)
+    elif protocol in ('http', 'https'):
+        # When fetched over HTTP, the file will show up in $WORKDIR
+        return os.path.join(d.getVar('WORKDIR'), os.path.basename(path))
+    else:
+        raise RuntimeError(f'Protocol {protocol} not supported')

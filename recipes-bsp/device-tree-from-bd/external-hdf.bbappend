@@ -115,19 +115,8 @@ python () {
 
     # Determine HDF paths and versions from filenames in the SRC_URI list:
     # 1) Get file paths (without 'file://' or 'http://' prefix) for all SRC_URI files that are HDF files
-    def src_uri_to_local_file(uri):
-        protocol, path = uri.split('://')
-        if protocol == 'file':
-            # The file fetcher preserves full directory structure
-            return os.path.join(d.getVar('WORKDIR'), path)
-        elif protocol in ('http', 'https'):
-            # When fetched over HTTP, the file will show up in $WORKDIR
-            return os.path.join(d.getVar('WORKDIR'), os.path.basename(path))
-        else:
-            raise RuntimeError(f'Protocol {protocol} not supported')
-
     file_paths = [
-        src_uri_to_local_file(s) for s in d.getVar('SRC_URI').split()
+        src_uri_to_local_file(d, s) for s in d.getVar('SRC_URI').split()
         if s.endswith('.' + d.getVar('HDF_EXT'))
     ]
 
