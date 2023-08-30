@@ -85,10 +85,9 @@ python () {
 
         try:
             hdf_path = sorted(hdf_path)[0]
-            print(f'HDF_PATH_RESOLVED: ' + str(hdf_path))
             set_var_dynamic(d, 'HDF_ABSPATH', '', str(hdf_path))
-            set_var_dynamic(d, 'HDF_SUFFIX', '', '-' + hdf_basename(hdf_path.stem))
-            hdf_vers = hdf_verinfo(hdf_path.stem)
+            set_var_dynamic(d, 'HDF_SUFFIX', '', '-' + hdf_basename(hdf_path))
+            hdf_vers = hdf_verinfo(hdf_path)
             set_var_dynamic(d, 'PKGV', 'None', hdf_vers or d.getVar('PV'))
         except Exception:
             # xsa may not be found, befor the fetcher is run - so we can't raise error here
