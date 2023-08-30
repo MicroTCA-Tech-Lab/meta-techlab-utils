@@ -159,10 +159,7 @@ python () {
         subpkg = pn + '-' + hdf
         subpkgs.append(subpkg)
         var_dest = os.path.join('/opt/xilinx/hw-design', hdf)
-        d.setVar('FILES_' + subpkg, ' '.join((
-            os.path.join(var_dest, 'design.xsa'),
-            (os.path.join(var_dest, 'version') if hdf_vers else '')
-        )))
+        d.setVar('FILES_' + subpkg, os.path.join(var_dest, '*'))
         d.setVar('PKG_' + subpkg, pn + ps + '-' + hdf)
         if hdf_vers:
             d.setVar('PKGV_' + subpkg, hdf_vers)
