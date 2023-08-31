@@ -85,10 +85,9 @@ python () {
 
         try:
             hdf_path = sorted(hdf_path)[0]
-            print(f'HDF_PATH_RESOLVED: ' + str(hdf_path))
             set_var_dynamic(d, 'HDF_ABSPATH', '', str(hdf_path))
-            set_var_dynamic(d, 'HDF_SUFFIX', '', '-' + hdf_basename(hdf_path.stem))
-            hdf_vers = hdf_verinfo(hdf_path.stem)
+            set_var_dynamic(d, 'HDF_SUFFIX', '', '-' + hdf_basename(hdf_path))
+            hdf_vers = hdf_verinfo(hdf_path)
             set_var_dynamic(d, 'PKGV', 'None', hdf_vers or d.getVar('PV'))
         except Exception:
             # xsa may not be found, befor the fetcher is run - so we can't raise error here
@@ -116,19 +115,8 @@ python () {
 
     # Determine HDF paths and versions from filenames in the SRC_URI list:
     # 1) Get file paths (without 'file://' or 'http://' prefix) for all SRC_URI files that are HDF files
-    def src_uri_to_local_file(uri):
-        protocol, path = uri.split('://')
-        if protocol == 'file':
-            # The file fetcher preserves full directory structure
-            return os.path.join(d.getVar('WORKDIR'), path)
-        elif protocol in ('http', 'https'):
-            # When fetched over HTTP, the file will show up in $WORKDIR
-            return os.path.join(d.getVar('WORKDIR'), os.path.basename(path))
-        else:
-            raise RuntimeError(f'Protocol {protocol} not supported')
-
     file_paths = [
-        src_uri_to_local_file(s) for s in d.getVar('SRC_URI').split()
+        src_uri_to_local_file(d, s) for s in d.getVar('SRC_URI').split()
         if s.endswith('.' + d.getVar('HDF_EXT'))
     ]
 
@@ -159,10 +147,7 @@ python () {
         subpkg = pn + '-' + hdf
         subpkgs.append(subpkg)
         var_dest = os.path.join('/opt/xilinx/hw-design', hdf)
-        d.setVar('FILES_' + subpkg, ' '.join((
-            os.path.join(var_dest, 'design.xsa'),
-            (os.path.join(var_dest, 'version') if hdf_vers else '')
-        )))
+        d.setVar('FILES_' + subpkg, os.path.join(var_dest, '*'))
         d.setVar('PKG_' + subpkg, pn + ps + '-' + hdf)
         if hdf_vers:
             d.setVar('PKGV_' + subpkg, hdf_vers)
