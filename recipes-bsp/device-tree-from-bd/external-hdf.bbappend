@@ -68,10 +68,7 @@ python () {
         if not m:
             return hdf_filename
         g = m.groupdict()
-        n_fmt = g['projname'] # zu19eg
-        if g['opt2']:
-            n_fmt += '-' + g['branch'] # zu19eg-branchname
-        return n_fmt
+        return g['projname'] # zu19eg
     
     # Resolve single PL file pointed at by HDF_PATH (may contain glob) and pick up version/name
     def handle_single_hdf():
