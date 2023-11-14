@@ -1,6 +1,6 @@
 require pl-variants.inc
 
-do_compile_prepend() {
+do_compile:prepend() {
     # Generate bin file for variants
     for PL_VARIANT in ${PL_VARIANTS}; do
         BITPATH=${RECIPE_SYSROOT}/boot/bitstream-${PL_VARIANT}/*.bit
@@ -12,7 +12,7 @@ do_compile_prepend() {
     done
 }
 
-do_install_prepend() {
+do_install:prepend() {
     if [ "${PL_VARIANTS}" != "" ]; then
         for PL_VARIANT in ${PL_VARIANTS}; do
             VAR_DESTDIR=${D}/lib/firmware/xilinx/base/${PL_VARIANT}
@@ -31,7 +31,7 @@ python () {
     make_pl_subpackages(d, lambda hdf: f'/lib/firmware/xilinx/base/{hdf}/*')
 
     # Make sure that the main package RDEPENDS on its subpackages
-    rdep = 'RDEPENDS_' + d.getVar('PN')
+    rdep = 'RDEPENDS:' + d.getVar('PN')
     d.setVar(rdep, (d.getVar(rdep) or '') + ' ' + d.getVar('SUBPKGS'))
 }
 
@@ -39,8 +39,8 @@ DEPENDS += " bitstream-extraction external-hdf"
 
 PL_PKG_SUFFIX ?= ""
 HDF_SUFFIX ?= ""
-PKG_${PN} = "${PN}${PL_PKG_SUFFIX}${HDF_SUFFIX}"
-PKG_${PN}-lic = "${PN}${PL_PKG_SUFFIX}${HDF_SUFFIX}-lic"
-PKG_${PN}-base = "${PN}${PL_PKG_SUFFIX}${HDF_SUFFIX}-base"
-ALLOW_EMPTY_${PN}-base = "1"
+PKG:${PN} = "${PN}${PL_PKG_SUFFIX}${HDF_SUFFIX}"
+PKG:${PN}-lic = "${PN}${PL_PKG_SUFFIX}${HDF_SUFFIX}-lic"
+PKG:${PN}-base = "${PN}${PL_PKG_SUFFIX}${HDF_SUFFIX}-base"
+ALLOW_EMPTY:${PN}-base = "1"
 PACKAGES = "${SUBPKGS} ${PN}"

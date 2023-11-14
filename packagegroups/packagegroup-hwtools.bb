@@ -12,4 +12,4 @@ HW_TOOLS_PACKAGES = " \
     pyudmaio  \
 "
 
-RDEPENDS_${PN} = "${HW_TOOLS_PACKAGES}"
+RDEPENDS:${PN} = "${HW_TOOLS_PACKAGES}"

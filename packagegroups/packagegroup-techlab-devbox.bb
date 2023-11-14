@@ -15,4 +15,4 @@ TECHLAB_DEVBOX_PACKAGES = " \
 
 TECHLAB_DEVBOX_PACKAGES += "${@bb.utils.contains('DISTRO_FEATURES', 'desy-login-support', 'desy-login-support', '' ,d)}"
 
-RDEPENDS_${PN} = "${TECHLAB_DEVBOX_PACKAGES}"
+RDEPENDS:${PN} = "${TECHLAB_DEVBOX_PACKAGES}"

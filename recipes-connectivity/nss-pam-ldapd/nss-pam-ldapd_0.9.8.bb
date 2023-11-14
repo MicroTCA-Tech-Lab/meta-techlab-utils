@@ -12,7 +12,7 @@ LICENSE = "LGPLv2.1"
 LIC_FILES_CHKSUM = "file://COPYING;md5=fbc093901857fcd118f065f900982c24"
 SECTION = "connectivity"
 
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
 SRC_URI = "\
 	http://arthurdejong.org/nss-pam-ldapd/${BPN}-${PV}.tar.gz \
@@ -23,7 +23,7 @@ SRC_URI = "\
 inherit useradd
 
 USERADD_PACKAGES = "${PN}"
-USERADD_PARAM_${PN} = "--system --no-create-home --shell /bin/false nslcd"
+USERADD_PARAM:${PN} = "--system --no-create-home --shell /bin/false nslcd"
 inherit autotools
 
 SRC_URI[md5sum] = "8c99fdc54f4bf9aca8c5f53fdb1403ff"
@@ -31,7 +31,7 @@ SRC_URI[sha256sum] = "ef7362e7f2003da8c7beb7bcc03c30494acf712625aaac8badc6e7eb16
 
 DEPENDS += "libpam openldap krb5"
 
-RDEPENDS_${PN} += "nscd"
+RDEPENDS:${PN} += "nscd"
 
 EXTRA_OECONF = "\
 	--disable-pynslcd \
@@ -39,14 +39,14 @@ EXTRA_OECONF = "\
 	--with-pam-seclib-dir=${base_libdir}/security \
 	"
 
-CONFFILES_${PN} += "${sysconfdir}/nslcd.conf"
+CONFFILES:${PN} += "${sysconfdir}/nslcd.conf"
 
-FILES_${PN} += "${base_libdir}/security ${datadir}"
-FILES_${PN}-dbg += "${base_libdir}/security/.debug"
+FILES:${PN} += "${base_libdir}/security ${datadir}"
+FILES:${PN}-dbg += "${base_libdir}/security/.debug"
 
 LDAP_DN ?= "dc=my-domain,dc=com"
 
-do_install_append() {
+do_install:append() {
 	install -D -m 0755 ${WORKDIR}/nslcd.init ${D}${sysconfdir}/init.d/nslcd
 
 	sed -i -e 's/^base dc=example,dc=com/base ${LDAP_DN}/;' ${D}${sysconfdir}/nslcd.conf
@@ -61,4 +61,4 @@ inherit update-rc.d
 INITSCRIPT_NAME = "nslcd"
 INITSCRIPT_PARAMS = "defaults"
 
-# SYSTEMD_SERVICE_${PN} = "nslcd.service"
+# SYSTEMD_SERVICE:${PN} = "nslcd.service"

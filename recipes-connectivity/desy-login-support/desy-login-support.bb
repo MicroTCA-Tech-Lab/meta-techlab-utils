@@ -20,11 +20,11 @@ do_install() {
     cp ${B}/conf/krb5.conf ${D}/etc
 }
 
-FILES_${PN} = "               \
+FILES:${PN} = "               \
     /etc/krb5.conf            \
 "
 
-RDEPENDS_${PN} = "          \
+RDEPENDS:${PN} = "          \
     base-files              \
     pam-krb5                \
     pam-plugin-mkhomedir    \

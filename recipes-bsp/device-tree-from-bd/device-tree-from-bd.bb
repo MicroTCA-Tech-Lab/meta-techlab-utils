@@ -21,7 +21,7 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 DT_FROM_BD_DTS_FILENAME ?= "app_from_bd.dts"
 
-SRC_URI_append = " \
+SRC_URI:append = " \
     file://gen_dt_from_bd.tcl \
 "
 
@@ -58,7 +58,7 @@ dts_from_xsa() {
     eval xsct -sdx -nodisp ${XSCTH_SCRIPT} ${PROJ_ARG} ${VAR_HW_ARG} ${APP_ARG} ${MISC_ARG}
 }
 
-do_configure_append() {
+do_configure:append() {
     # Support multiple PL variants in one single Yocto image.
 
     HW_DESIGNS=${RECIPE_SYSROOT}/opt/xilinx/hw-design
@@ -81,15 +81,15 @@ python () {
     make_pl_subpackages(d, lambda hdf: f'/opt/mtca-tech-lab/dt/app_from_bd_{hdf}.dts')
 }
 
-FILES_${PN} = "/opt/mtca-tech-lab/dt/${DT_FROM_BD_DTS_FILENAME}"
+FILES:${PN} = "/opt/mtca-tech-lab/dt/${DT_FROM_BD_DTS_FILENAME}"
 
-SYSROOT_DIRS_append = "/opt/mtca-tech-lab"
+SYSROOT_DIRS:append = "/opt/mtca-tech-lab"
 
 # for .xsa files
 DEPENDS += " external-hdf"
 
 PL_PKG_SUFFIX ?= ""
 HDF_SUFFIX ?= ""
-PKG_${PN} = "${PN}${PL_PKG_SUFFIX}${HDF_SUFFIX}"
-PKG_${PN}-lic = "${PN}${PL_PKG_SUFFIX}${HDF_SUFFIX}-lic"
+PKG:${PN} = "${PN}${PL_PKG_SUFFIX}${HDF_SUFFIX}"
+PKG:${PN}-lic = "${PN}${PL_PKG_SUFFIX}${HDF_SUFFIX}-lic"
 PACKAGES = "${SUBPKGS} ${PN}"

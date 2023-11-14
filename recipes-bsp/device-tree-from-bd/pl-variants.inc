@@ -25,7 +25,7 @@ def set_var_dynamic(d, var_name, var_val_default, var_val=None):
 # Called by consumers of PL_VARIANTS (bitstream-extraction, fpga-manager-util, ...)
 # The calling recipe must DEPEND on external-hdf
 #
-# files_str_cb: callback returning a string for FILES_ of the subpackage
+# files_str_cb: callback returning a string for FILES: of the subpackage
 #
 def make_pl_subpackages(d, files_str_cb):
     if not d.getVar('PL_VARIANTS'):
@@ -41,13 +41,13 @@ def make_pl_subpackages(d, files_str_cb):
         # Create a subpackage for each variant
         subpkg = pn + '-' + hdf
         subpkgs.append(subpkg)
-        d.setVar('PKG_' + subpkg, pn + ps + '-' + hdf)
-        d.setVar('FILES_' + subpkg, files_str_cb(hdf))
+        d.setVar('PKG:' + subpkg, pn + ps + '-' + hdf)
+        d.setVar('FILES:' + subpkg, files_str_cb(hdf))
 
         ver_str_default = d.getVar('PKGV') # Use top level package version (PKGV) as default
         ver_str = read_hdf_attr(d, 'version', hdf)
 
-        set_var_dynamic(d, 'PKGV_' + subpkg, ver_str_default, ver_str)
+        set_var_dynamic(d, 'PKGV:' + subpkg, ver_str_default, ver_str)
 
     set_var_dynamic(d, 'SUBPKGS', '', ' '.join(subpkgs))
 

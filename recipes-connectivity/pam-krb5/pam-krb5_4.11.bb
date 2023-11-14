@@ -19,4 +19,4 @@ inherit autotools
 
 EXTRA_OECONF = "--libdir=${base_libdir}"
 
-FILES_${PN} += "${base_libdir}/security/pam_krb5.so"
+FILES:${PN} += "${base_libdir}/security/pam_krb5.so"

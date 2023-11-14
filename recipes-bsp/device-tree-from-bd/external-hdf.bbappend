@@ -4,8 +4,9 @@ require pl-variants.inc
 # placed into PL_VARIANTS_DIR which must then be specified in the project-
 # specific external-hdf.bbapend or in conf/local.conf.
 
-HDF_NAME = "only-used-for-git"
+# HDF_NAME = "only-used-for-git"
 HDF_EXT = "xsa"
+SRC_URI = ""
 
 python do_install() {
     import shutil
@@ -147,10 +148,10 @@ python () {
         subpkg = pn + '-' + hdf
         subpkgs.append(subpkg)
         var_dest = os.path.join('/opt/xilinx/hw-design', hdf)
-        d.setVar('FILES_' + subpkg, os.path.join(var_dest, '*'))
-        d.setVar('PKG_' + subpkg, pn + ps + '-' + hdf)
+        d.setVar('FILES:' + subpkg, os.path.join(var_dest, '*'))
+        d.setVar('PKG:' + subpkg, pn + ps + '-' + hdf)
         if hdf_vers:
-            d.setVar('PKGV_' + subpkg, hdf_vers)
+            d.setVar('PKGV:' + subpkg, hdf_vers)
     d.setVar('SUBPKGS', ' '.join(subpkgs))
 }
 
@@ -158,11 +159,11 @@ python () {
 # (e.g. set PL_PKG_SUFFIX to 'kaldera-ctrl', then the RPM package will be named 'external-hdf-kaldera-ctrl')
 PL_PKG_SUFFIX ?= ""
 HDF_SUFFIX ?= ""
-PKG_${PN} = "${PN}${PL_PKG_SUFFIX}${HDF_SUFFIX}"
-PKG_${PN}-lic = "${PN}${PL_PKG_SUFFIX}${HDF_SUFFIX}-lic"
+PKG:${PN} = "${PN}${PL_PKG_SUFFIX}${HDF_SUFFIX}"
+PKG:${PN}-lic = "${PN}${PL_PKG_SUFFIX}${HDF_SUFFIX}-lic"
 PACKAGES = "${SUBPKGS} ${PN}"
 
-FILES_${PN} += "    \
+FILES:${PN} += "    \
   /opt/xilinx/hw-design/version \
   /opt/xilinx/hw-design/hdf-suffix \
   /opt/xilinx/hw-design/pl-variants \

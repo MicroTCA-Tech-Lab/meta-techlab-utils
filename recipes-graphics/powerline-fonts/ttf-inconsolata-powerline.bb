@@ -13,4 +13,4 @@ S = "${WORKDIR}/git/Inconsolata"
 PACKAGES = "ttf-inconsolata-powerline"
 FONT_PACKAGES = "ttf-inconsolata-powerline"
 
-FILES_${PN} += "${datadir}/fonts/truetype/*.ttf"
+FILES:${PN} += "${datadir}/fonts/truetype/*.ttf"

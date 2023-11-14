@@ -15,7 +15,7 @@ inherit module
 # https://lists.yoctoproject.org/pipermail/meta-intel/2018-September/005546.html
 DEPENDS += "xz-native bc-native bison-native"
 
-RPROVIDES_${PN} += " kernel-module-u-dma-buf kernel-module-u-dma-buf-mgr"
+RPROVIDES:${PN} += " kernel-module-u-dma-buf kernel-module-u-dma-buf-mgr"
 KERNEL_MODULE_AUTOLOAD += " u-dma-buf u-dma-buf-mgr"
 KERNEL_MODULE_PROBECONF += "u-dma-buf"
 

@@ -4,7 +4,7 @@ PV = "1.3.0"
 PR = "r0"
 
 DEPENDS = "boost"
-RDEPENDS_${PN} = "boost-log boost-program-options"
+RDEPENDS:${PN} = "boost-log boost-program-options"
 
 inherit pkgconfig cmake
 
@@ -16,4 +16,4 @@ EXTRA_OECMAKE += "-DCMAKE_SKIP_RPATH=TRUE"
 
 S="${WORKDIR}/git"
 
-RDEPENDS_${PN} = "uio-users-group uio-users-udev-rule"
+RDEPENDS:${PN} = "uio-users-group uio-users-udev-rule"

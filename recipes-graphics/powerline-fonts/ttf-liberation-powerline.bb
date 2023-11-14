@@ -13,4 +13,4 @@ S = "${WORKDIR}/git/LiberationMono"
 PACKAGES = "ttf-liberation-powerline"
 FONT_PACKAGES = "ttf-liberation-powerline"
 
-FILES_${PN} += "${datadir}/fonts/truetype/*.ttf"
+FILES:${PN} += "${datadir}/fonts/truetype/*.ttf"

@@ -3,7 +3,7 @@ LICENSE = "CLOSED"
 PV = "1.0"
 PR = "r1"
 
-RDEPENDS_${PN} = "uio-users-group"
+RDEPENDS:${PN} = "uio-users-group"
 
 SRC_URI = " \
     file://70-uio.rules \
@@ -16,12 +16,12 @@ do_install () {
     install -m 0644 ${WORKDIR}/70-u-dma-buf.rules ${D}${sysconfdir}/udev/rules.d/
 }
 
-FILES_${PN} += " \
+FILES:${PN} += " \
     ${sysconfdir}/udev/rules.d/70-uio.rules \
     ${sysconfdir}/udev/rules.d/70-u-dma-buf.rules \
 "
 
-pkg_postinst_ontarget_${PN}() {
+pkg_postinst_ontarget:${PN}() {
 #!/bin/sh -e
 udevadm control --reload-rules && udevadm trigger
 }

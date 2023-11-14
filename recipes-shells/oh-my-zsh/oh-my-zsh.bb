@@ -39,8 +39,8 @@ EOF
     cp ${ZSHRC} ${D}/home/root
 }
 
-FILES_${PN} = "/usr/local/oh-my-zsh/* /etc/skel/.zshrc /home/root/.zshrc"
-RDEPENDS_${PN} += " zsh fzf"
+FILES:${PN} = "/usr/local/oh-my-zsh/* /etc/skel/.zshrc /home/root/.zshrc"
+RDEPENDS:${PN} += " zsh fzf"
 
 # for fzf history widget
-RDEPENDS_${PN} += " perl"
+RDEPENDS:${PN} += " perl"

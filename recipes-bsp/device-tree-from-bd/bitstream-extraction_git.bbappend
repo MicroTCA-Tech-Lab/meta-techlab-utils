@@ -28,7 +28,7 @@ bitfile_from_xsa() {
     eval xsct -sdx -nodisp ${XSCTH_SCRIPT} ${PROJ_ARG} ${VAR_HW_ARG} ${APP_ARG} ${MISC_ARG}
 }
 
-do_configure_append() {
+do_configure:append() {
     if [ "${PL_VARIANTS}" != "" ]; then
         # Support multiple PL variants in one single Yocto image.
         HW_DESIGNS=${RECIPE_SYSROOT}/opt/xilinx/hw-design
@@ -39,7 +39,7 @@ do_configure_append() {
     fi
 }
 
-do_install_append() {
+do_install:append() {
     if [ "${PL_VARIANTS}" != "" ]; then
         HW_DESIGNS=${RECIPE_SYSROOT}/opt/xilinx/hw-design
         for PL_VARIANT in ${PL_VARIANTS}; do
@@ -68,6 +68,6 @@ python () {
 
 PL_PKG_SUFFIX ?= ""
 HDF_SUFFIX ?= ""
-PKG_${PN} = "${PN}${PL_PKG_SUFFIX}${HDF_SUFFIX}"
-PKG_${PN}-lic = "${PN}${PL_PKG_SUFFIX}${HDF_SUFFIX}-lic"
+PKG:${PN} = "${PN}${PL_PKG_SUFFIX}${HDF_SUFFIX}"
+PKG:${PN}-lic = "${PN}${PL_PKG_SUFFIX}${HDF_SUFFIX}-lic"
 PACKAGES = "${SUBPKGS} ${PN}"
