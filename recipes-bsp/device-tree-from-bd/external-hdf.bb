@@ -1,12 +1,23 @@
+DESCRIPTION = "Recipe to copy and install externally built XSA to deploy"
+
+LICENSE = "CLOSED"
+PROVIDES = "virtual/hdf"
+INHIBIT_DEFAULT_DEPS = "1"
+PACKAGE_ARCH ?= "${MACHINE_ARCH}"
+
+do_configure[noexec] = "1"
+do_compile[noexec] = "1"
+
+SRC_URI = ""
+HDF_EXT = "xsa"
+
+inherit deploy
+
 require pl-variants.inc
 
 # Different PL bitstream variants to be included in the Yocto image can be
 # placed into PL_VARIANTS_DIR which must then be specified in the project-
 # specific external-hdf.bbapend or in conf/local.conf.
-
-# HDF_NAME = "only-used-for-git"
-HDF_EXT = "xsa"
-SRC_URI = ""
 
 python do_install() {
     import shutil
@@ -163,14 +174,13 @@ PKG:${PN} = "${PN}${PL_PKG_SUFFIX}${HDF_SUFFIX}"
 PKG:${PN}-lic = "${PN}${PL_PKG_SUFFIX}${HDF_SUFFIX}-lic"
 PACKAGES = "${SUBPKGS} ${PN}"
 
-FILES:${PN} += "    \
-  /opt/xilinx/hw-design/version \
-  /opt/xilinx/hw-design/hdf-suffix \
+FILES:${PN} = "                     \
+  /opt/xilinx/hw-design/design.xsa  \
+  /opt/xilinx/hw-design/version     \
+  /opt/xilinx/hw-design/hdf-suffix  \
   /opt/xilinx/hw-design/pl-variants \
 "
 
-# Override "do_install[noexec]" from upstream
-# TODO: Is this still necessary when dependencies are properly declared?
-python () {
-  d.delVarFlag('do_install', 'noexec')
-}
+addtask do_deploy after do_install
+
+SYSROOT_DIRS += " /opt"
