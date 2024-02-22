@@ -20,7 +20,9 @@ do_install_prepend() {
             # Install base hdf bin & dtbo
             # We force the binfile name to 'pl-full.bit.bin' both here and in device-tree.bbappend
             install -Dm 0644 ${XSCTH_WS}/var-${PL_VARIANT}/*.bit.bin_base ${VAR_DESTDIR}/pl-full.bit.bin
-            install -Dm 0644 ${RECIPE_SYSROOT}/boot/devicetree/pl-var-${PL_VARIANT}.dtbo ${VAR_DESTDIR}/base.dtbo
+            if [ ${DT_FROM_BD_ENABLE} = "1" ]; then
+                install -Dm 0644 ${RECIPE_SYSROOT}/boot/devicetree/pl-var-${PL_VARIANT}.dtbo ${VAR_DESTDIR}/base.dtbo
+            fi
         done
         return
     fi
