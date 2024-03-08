@@ -16,7 +16,7 @@ SRC_URI = "\
          git://github.com/mattn/go-runewidth;protocol=https;name=go-runewidth;destsuffix=${BPN}-${PV}/src/github.com/mattn/go-runewidth \
          git://github.com/mattn/go-shellwords;protocol=https;name=go-shellwords;destsuffix=${BPN}-${PV}/src/github.com/mattn/go-shellwords \
          git://github.com/rivo/uniseg;protocol=https;name=go-uniseg;destsuffix=${BPN}-${PV}/src/github.com/rivo/uniseg \
-         git://github.com/saracen/walker;protocol=https;name=go-walker;destsuffix=${BPN}-${PV}/src/github.com/saracen/walker \
+         git://github.com/saracen/walker;protocol=https;name=go-walker;destsuffix=${BPN}-${PV}/src/github.com/saracen/walker;branch=main \
          git://github.com/golang/term;protocol=https;name=go-term;destsuffix=${BPN}-${PV}/src/golang.org/x/term \
          git://github.com/golang/sync;protocol=https;name=go-sync;destsuffix=${BPN}-${PV}/src/golang.org/x/sync \
          git://github.com/golang/sys;protocol=https;name=go-sys;destsuffix=${BPN}-${PV}/src/golang.org/x/sys \
@@ -33,6 +33,10 @@ SRCREV_go-sync="036812b2e83c0ddf193dd5a34e034151da389d09"
 SRCREV_go-sys="0f9fa26af87c481a6877a4ca1330699ba9a30673"
 
 inherit go
+
+do_compile:prepend() {
+    export GO111MODULE=off
+}
 
 do_install:append() {
     FZFSH_DIR=${D}/usr/lib/fzf/shell
