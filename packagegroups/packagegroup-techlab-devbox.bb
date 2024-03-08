@@ -8,7 +8,6 @@ TECHLAB_DEVBOX_PACKAGES = " \
     zsh                  \
     oh-my-zsh            \
     tmux                 \
-    python3-ranger       \
     fzf                  \
     zsh                  \
 "
