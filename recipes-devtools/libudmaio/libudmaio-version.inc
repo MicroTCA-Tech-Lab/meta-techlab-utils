@@ -1,5 +1,5 @@
-PV = "1.3.2"
+PV = "1.4.1"
 PR = "r0"
-SRCREV = "b58f7023dc1accabfbf861b8c1f0ac7f2567bbfa"
+SRCREV = "6ae7b892993c78b1a5aa1bc3273c9c04f0114b4b"
 LIBUDMAIO_BRANCH = "main"
 
